@@ -54,5 +54,9 @@
     "*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "graphql": "^16.8.1",
+    "graphql-request": "^7.0.1"
   }
 }
