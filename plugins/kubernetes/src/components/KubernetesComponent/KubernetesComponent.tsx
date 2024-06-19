@@ -25,6 +25,7 @@ export const KubernetesComponent = () => {
     const { result: qontractResult, loaded: qontractLoaded, error: qontractError } = QueryQontract(NSQuery);
 
     console.log(qontractResult)
+
     const title: string = "Deployment Information"
 
     // state variables for stage/prod buttons

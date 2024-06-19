@@ -23,10 +23,9 @@ const QueryQontract = (query: string, path?: string) => {
         return `/services/${platform}/${service}/app.yml`
     }
 
-    // Get data on load
-    useEffect(() => {
+    const queryQontract = async () => {
         const variables = { path: getAppInterfaceNamespacePath() };
-        request(proxyUrl, query, variables)
+        await request(proxyUrl, query, variables)
             .then((data: any) => {
                 setLoaded(true)
                 setResult(data.apps_v1[0].namespaces)
@@ -35,6 +34,11 @@ const QueryQontract = (query: string, path?: string) => {
             .catch((_error) => {
                 setError(true)
             });
+    }
+
+    // Get qontract data on load
+    useEffect(() => {
+        queryQontract()
     }, []);
 
     console.log(result)

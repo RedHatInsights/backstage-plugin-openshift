@@ -9,9 +9,6 @@ const QueryKubernetes = (environmentName: string, qontractData: any) => {
     const [loaded, setLoaded] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
 
-    // const [resourceUtilization, setResourceUtilization] = useState({});
-    const [resourceUtilization, setResourceUtilization] = useState({});
-
     const clusterMap = {
         'crc-eph': {
             name: 'ephemeral',
@@ -52,10 +49,10 @@ const QueryKubernetes = (environmentName: string, qontractData: any) => {
 
     const backendUrl = config.getString('backend.baseUrl');
 
-    const getClusterData = () => {
+    const getClusterData = async() => {
         const proxyName = getClusterName(environmentName)
         const clusterData = {deployments: [], pods: []}
-        Promise.all([
+        await Promise.all([
             fetch(`${backendUrl}/api/proxy/${proxyName}/apis/apps/v1/namespaces/${namespaceName}/deployments`)
             .then(response => response.json())
             .then(response => {clusterData.deployments = response.items}),
