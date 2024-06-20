@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import {
     Grid,
+    Link,
     Table,
     TableBody,
     TableCell,
@@ -17,9 +18,11 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import QueryKubernetes from '../../common/QueryKubernetesAPI'
+import ResourceUsageProgress from './ResourceUsageProgress';
 
-export const DeploymentsListComponent = (qontractResult: any) => {
-    const { result: KubernetesResult, loaded: KubernetesLoaded, error: KubernetesError } = QueryKubernetes('crc-eph', qontractResult);
+export const DeploymentsListComponent = (data: any) => {
+    console.log(data)
+    const { result: KubernetesResult, deploymentUrlPath: deploymentUrl, loaded: KubernetesLoaded, error: KubernetesError } = QueryKubernetes(data);
 
     console.log(KubernetesResult.deployments)
     console.log(KubernetesLoaded)
@@ -27,10 +30,7 @@ export const DeploymentsListComponent = (qontractResult: any) => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-    // const [deployments, setDeployments] = useState<any>([])
-
     const parseResourceValue = (value: string, resourceType: string) => {
-
         const m = new RegExp("m");
         const ki = new RegExp("Ki");
         const mi = new RegExp("Mi");
@@ -78,34 +78,59 @@ export const DeploymentsListComponent = (qontractResult: any) => {
         return 0
     }
 
-    // // calculate the total resource utilization per pod
-    // const sumCPUMemoryUsage = (pod: any) => {
+    const aggregate_pod_resources = (deploymentData: any) => {
+        const resourceInfo = {'requests': {'cpu': 0, 'memory': 0}, 'limits': {'cpu': 0, 'memory': 0}}
         
+        Object.values(deploymentData).map(deployment => {
+            console.log(deployment)
+            const resourceLimitsCPU = deployment.spec.template.spec.containers[0].resources.limits ? deployment?.spec?.template?.spec?.containers[0]?.resources?.limits?.cpu : 0;
+            const resourceLimitsMemory = deployment.spec.template.spec.containers[0].resources.limits ? deployment.spec.template.spec.containers[0].resources.limits.memory : 0;
+            const resourceRequestsCPU = deployment.spec.template.spec.containers[0].resources.requests ? deployment.spec.template.spec.containers[0].resources.requests.cpu : 0;
+            const resourceRequestsMemory = deployment.spec.template.spec.containers[0].resources.requests ? deployment.spec.template.spec.containers[0].resources.requests.memory : 0;
+            
+            resourceInfo.limits.cpu += parseResourceValue(resourceLimitsCPU, "cpu")
+            resourceInfo.limits.memory += parseResourceValue(resourceLimitsMemory, "memory")
+            resourceInfo.requests.cpu += parseResourceValue(resourceRequestsCPU, "cpu")
+            resourceInfo.requests.memory += parseResourceValue(resourceRequestsMemory, "memory")
+            console.log(resourceInfo)
+        })
 
-    //     console.log(pod)
-    //     Object.values(pod.containers).forEach(container => {
-    //         console.log(container)
-    //         const cpuUsage = container.usage.cpu;
-    //         const memoryUsage = container.usage.memory;
-    //         console.log(memoryUsage)
-    //         console.log(cpuUsage)
+        return resourceInfo;
+    }
 
+    // // calculate the total resource utilization per pod
+    const sumCPUMemoryUsage = (deployment: any, deploymentData: any, podData: any) => {
+        const totalPodUsage = {'cpu': 0, 'memory': 0};
 
-    //         totalPodUsage.cpu += parseResourceValue(cpuUsage, "cpu");
-    //         totalPodUsage.memory += parseResourceValue(memoryUsage, "memory");
-    //     })
-    //     console.log(totalPodUsage);
+        // Calculate pod cpu/memory usage alongside data from deployments
+        Object.values(podData).map(pod => {
+            if (pod.metadata.name.includes(deploymentData[deployment].metadata.name)) {
+                console.log(pod.metadata.name)
+                console.log(deploymentData[deployment].metadata.name);
 
-    //     return totalPodUsage;
-    // }
+                console.log(pod)
+                Object.values(pod.containers).forEach(container => {
+                    const cpuUsage = container.usage.cpu;
+                    const memoryUsage = container.usage.memory;
+                    console.log(memoryUsage)
+                    console.log(cpuUsage)
+
+                    totalPodUsage.cpu += parseResourceValue(cpuUsage, "cpu");
+                    totalPodUsage.memory += parseResourceValue(memoryUsage, "memory");
+                })
+                console.log(totalPodUsage);
+            }
+        })
+
+        return totalPodUsage;
+    }
+
     const allDeploymentData = [];
-
-    const [deployments, setDeployments] = useState([])
+    const [deployments, setDeployments] = useState<Array<Object>>([]);
+    const [loaded, setLoaded] = useState(false);
     
     // creates an object with each pod name and associated cpu and memory usage
     const getDeploymentData = (data: any) => {
-        
-
         const deploymentData = data.deployments;
         const podData = data.pods;
 
@@ -114,53 +139,34 @@ export const DeploymentsListComponent = (qontractResult: any) => {
 
         for (const deployment in deploymentData) {
             // console.log(deploymentData[deployment])
-            const totalPodUsage = {'cpu': 0, 'memory': 0};
 
-            Object.values(podData).map(pod => {
-                // allDeploymentData[pod.metadata.name] = sumCPUMemoryUsage(pod);
-                // console.log(pod)
-                if (pod.metadata.name.includes(deploymentData[deployment].metadata.name)) {
-                    console.log(pod.metadata.name)
-                    console.log(deploymentData[deployment].metadata.name);
+            const resourceInfo = aggregate_pod_resources(deploymentData)
+            const totalPodUsage = sumCPUMemoryUsage(deployment, deploymentData, podData)
 
-                    console.log(pod)
-                    Object.values(pod.containers).forEach(container => {
-                        const cpuUsage = container.usage.cpu;
-                        const memoryUsage = container.usage.memory;
-                        console.log(memoryUsage)
-                        console.log(cpuUsage)
-
-                        totalPodUsage.cpu += parseResourceValue(cpuUsage, "cpu");
-                        totalPodUsage.memory += parseResourceValue(memoryUsage, "memory");
-                    })
-                    console.log(totalPodUsage);
-                }
-            })
+            console.log(resourceInfo)
 
             allDeploymentData.push({
                 "name": deploymentData[deployment].metadata.name,
-                // "status": deploymentData[deployment].status.,
-                "resources": totalPodUsage,
+                "resourceUsage": totalPodUsage,
+                "resourceLimitsRequests": resourceInfo,
                 "creationTimestamp": deploymentData[deployment].metadata.creationTimestamp,
+                "image": deploymentData[deployment].spec.template.spec.containers[0].image
             });
-
-            // setDeployments([
-            //     ...deployments,
-            //     {"resources": totalPodUsage, "creationTimestamp": deploymentData[deployment].metadata.creationTimestamp}
-            // ])
-
-            console.log(deployments)
         }
 
         console.log(allDeploymentData)
 
-
         console.log(deployments)
+
         return allDeploymentData
     }
 
-    getDeploymentData(KubernetesResult)
-    console.log(allDeploymentData)
+    
+    
+    // useEffect(() => {
+        getDeploymentData(KubernetesResult)
+    // }, [])
+
     
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -198,13 +204,22 @@ export const DeploymentsListComponent = (qontractResult: any) => {
     }
 
     const RowBody = ({ result }) => {
+        const url = `${deploymentUrl}${result.name}`
         return (
             <TableRow>
                 <TableCell align="center">PLACEHOLDER</TableCell>
-                <TableCell align="center">{result.name}</TableCell>
-                <TableCell align="center">PLACEHOLDER</TableCell>
-                <TableCell align="center">{result.resources.cpu}</TableCell>
-                <TableCell align="center">{result.resources.memory}</TableCell>
+                <TableCell align="center">
+                    <Link href={url} underline="hover">{result.name}</Link>
+                </TableCell>
+                <TableCell align="center">
+                    <Link href={result.image} underline="hover">{result.image}</Link>
+                </TableCell>
+                <TableCell align="center">
+                    <ResourceUsageProgress resourceUsage={result.resourceUsage} resourceLimitsRequests={result.resourceLimitsRequests} resourceType="cpu" />
+                </TableCell>
+                <TableCell align="center">
+                    <ResourceUsageProgress resourceUsage={result.resourceUsage} resourceLimitsRequests={result.resourceLimitsRequests} resourceType="memory" />
+                </TableCell>
                 <TableCell align="center">{result.creationTimestamp}</TableCell>
             </TableRow>
         )
@@ -242,7 +257,7 @@ export const DeploymentsListComponent = (qontractResult: any) => {
         )
     }
     
-    if (KubernetesLoaded) {
+    // if (loaded) {
         return (
             <Grid container spacing={3} direction="column">
                 <Grid item>
@@ -261,6 +276,6 @@ export const DeploymentsListComponent = (qontractResult: any) => {
                 </Grid>
             </Grid>
         )
-    }
+    // }
 
 }

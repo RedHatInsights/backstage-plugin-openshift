@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { 
+import {
+    Box,
     Button,
     ButtonGroup,
     Grid,
@@ -31,7 +32,7 @@ export const KubernetesComponent = () => {
     // state variables for stage/prod buttons
     const [isStageButtonDisabled, setIsStageButtonDisabled] = useState<boolean>(true);
     const [isProdButtonDisabled, setIsProdButtonDisabled] = useState<boolean>(false);
-    const [currentEnvironment, setCurrentEnvironment] = useState<string>("stage")
+    const [currentEnvironment, setCurrentEnvironment] = useState<string>("crcs02ue1")
 
     // styles for linear progress bar
     const useStyles = makeStyles((theme) => ({
@@ -48,13 +49,24 @@ export const KubernetesComponent = () => {
     const buttonHandler = (isStageDisabled: boolean, isProdDisabled: boolean) => {
         setIsStageButtonDisabled(isStageDisabled)
         setIsProdButtonDisabled(isProdDisabled)
+
+        setCurrentEnvironment(isProdButtonDisabled ? 'crcs02ue1' : 'crcp01ue1')
+        console.log(currentEnvironment)
     }
 
     const ClusterButtons = () => {
         return (
             <ButtonGroup aria-label="Basic button group">
-                <Button variant="contained" color="primary" onClick={() => buttonHandler(true, false)} disabled={isStageButtonDisabled}>Stage</Button>
-                <Button variant="contained" color="primary" onClick={() => buttonHandler(false, true)} disabled={isProdButtonDisabled}>Prod</Button>
+                <Button size="small" color="primary" onClick={() => buttonHandler(true, false)} disabled={isStageButtonDisabled}>Stage</Button>
+                <Button size="small" color="primary" onClick={() => buttonHandler(false, true)} disabled={isProdButtonDisabled}>Prod</Button>
+            </ButtonGroup>
+        );
+    }
+
+    const RefreshButton = () => {
+        return (
+            <ButtonGroup aria-label="Basic button group">
+                <Button size="small" color="primary" onClick={buttonHandler}>Refresh</Button>
             </ButtonGroup>
         );
     }
@@ -80,9 +92,11 @@ export const KubernetesComponent = () => {
 
     return (
         <InfoCard title={title}>
-            <Grid container spacing={3} direction="column">
+            <Box display="flex" justifyContent="space-between">
                 <ClusterButtons />
-                <DeploymentsListComponent qontractResult={qontractResult}/>
+            </Box>
+            <Grid container spacing={3} direction="column">
+                <DeploymentsListComponent key={currentEnvironment} environmentName={currentEnvironment} qontractResult={qontractResult} />
             </Grid>
         </InfoCard>
     )

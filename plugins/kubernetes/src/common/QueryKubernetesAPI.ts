@@ -2,47 +2,58 @@ import { useState, useEffect } from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 
-const QueryKubernetes = (environmentName: string, qontractData: any) => {
+const QueryKubernetes = (data: any) => {
     type KubernetesApp = Record<string, any>;
 
     const [result, setResult] = useState<KubernetesApp>({});
     const [loaded, setLoaded] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
 
-    const clusterMap = {
-        'crc-eph': {
-            name: 'ephemeral',
-            url: 'https://api.crc-eph.r9lp.p1.openshiftapps.com:6443',
-        },
-        // 'crcs02ue1': {
-        //     name: 'stage',
-        //     url: 'https://api.crc-eph.r9lp.p1.openshiftapps.com:6443',
-        // },
-        // 'crcp01ue1': {
-        //     name: 'production',
-        //     url: '',
-        // },
-    };
+    const environmentName = data.environmentName;
 
-    const getClusterName = (cluster: string) => {
-        if (clusterMap[cluster as keyof typeof clusterMap]) {
-          return clusterMap[cluster as keyof typeof clusterMap].name;
-        }
-        return cluster;
-      };
 
-    const getEnvironmentNamespace = () => {
-        console.log(qontractData)
-        console.log(environmentName)
-        const clusterInfo = qontractData.qontractResult.find(e => e.cluster.name === environmentName)
+
+    const getEnvironmentNamespace = (environment: string) => {
+        console.log(data)
+        console.log(environment)
+        const clusterInfo = data.qontractResult.find(e => e.cluster.name === environment)
         const namespaceName = clusterInfo?.name
 
         return namespaceName
     }
 
-    const namespaceName = getEnvironmentNamespace()
+    const namespaceName = getEnvironmentNamespace(environmentName)
 
     console.log(namespaceName)
+
+    const clusterMap = {
+        'crc-eph': {
+            url: `https://console-openshift-console.apps.crc-eph.r9lp.p1.openshiftapps.com/k8s/ns/${namespaceName}/deployments`,
+            name: 'ephemeral',
+        },
+        crcs02ue1: {
+            url: `https://console-openshift-console.apps.crcs02ue1.urby.p1.openshiftapps.com/k8s/ns/${namespaceName}/deployments`,
+            name: 'stage',
+        },
+        crcp01ue1: {
+            url: `https://console-openshift-console.apps.crcp01ue1.o9m8.p1.openshiftapps.com/k8s/ns/${namespaceName}/deployments`,
+            name: 'prod',
+        },
+    };
+
+    const getClusterName = (cluster: string) => {
+        if (clusterMap[cluster as keyof typeof clusterMap]) {
+            return clusterMap[cluster as keyof typeof clusterMap].name;
+        }
+        return cluster;
+    };
+
+    const getClusterUrl = (cluster: string) => {
+        if (clusterMap[cluster as keyof typeof clusterMap]) {
+            return clusterMap[cluster as keyof typeof clusterMap].url;
+        }
+        return cluster;
+    };
 
     // Get Backstage objects
     const config = useApi(configApiRef);
@@ -75,7 +86,7 @@ const QueryKubernetes = (environmentName: string, qontractData: any) => {
 
     useEffect(() => {
         getClusterData()
-    }, []);
+    }, [namespaceName]);
 
     console.log(result)
 

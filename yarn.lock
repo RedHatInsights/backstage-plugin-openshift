@@ -6473,6 +6473,33 @@
     node-addon-api "^3.2.1"
     node-gyp-build "^4.3.0"
 
+"@patternfly/react-core@^5.3.3":
+  version "5.3.3"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-core/-/react-core-5.3.3.tgz#06f589f5b0bb95dd231a0ca9379fa68d242899ab"
+  integrity sha512-qq3j0M+Vi+Xmd+a/MhRhGgjdRh9Hnm79iA+L935HwMIVDcIWRYp6Isib/Ha4+Jk+f3Qdl0RT3dBDvr/4m6OpVQ==
+  dependencies:
+    "@patternfly/react-icons" "^5.3.2"
+    "@patternfly/react-styles" "^5.3.1"
+    "@patternfly/react-tokens" "^5.3.1"
+    focus-trap "7.5.2"
+    react-dropzone "^14.2.3"
+    tslib "^2.5.0"
+
+"@patternfly/react-icons@^5.3.2":
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-5.3.2.tgz#f594ed67b0d39f486ea0f0367de058d4bd056605"
+  integrity sha512-GEygYbl0H4zD8nZuTQy2dayKIrV2bMMeWKSOEZ16Y3EYNgYVUOUnN+J0naAEuEGH39Xb1DE9n+XUbE1PC4CxPA==
+
+"@patternfly/react-styles@^5.3.1":
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-5.3.1.tgz#4bc42f98c48e117df5d956ee3f551d0f57ef1b35"
+  integrity sha512-H6uBoFH3bJjD6PP75qZ4k+2TtF59vxf9sIVerPpwrGJcRgBZbvbMZCniSC3+S2LQ8DgXLnDvieq78jJzHz0hiA==
+
+"@patternfly/react-tokens@^5.3.1":
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-5.3.1.tgz#b0f840ee3ee3bcf72b5fbf35dc3fd5559666744d"
+  integrity sha512-VYK0uVP2/2RJ7ZshJCCLeq0Boih5I1bv+9Z/Bg6h12dCkLs85XsxAX9Ve+BGIo5DF54/mzcRHE1RKYap4ISXuw==
+
 "@pkgjs/parseargs@^0.11.0":
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
@@ -10388,6 +10415,11 @@ atomic-sleep@^1.0.0:
   resolved "https://registry.yarnpkg.com/atomic-sleep/-/atomic-sleep-1.0.0.tgz#eb85b77a601fc932cfe432c5acd364a9e2c9075b"
   integrity sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==
 
+attr-accept@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/attr-accept/-/attr-accept-2.2.2.tgz#646613809660110749e92f2c10833b70968d929b"
+  integrity sha512-7prDjvt9HmqiZ0cl5CRjtS84sEyhsHP2coDkaZKRKVfCDo9s7iw7ChVmar78Gu9pC4SoR/28wFu/G5JJhTnqEg==
+
 autolinker@^3.11.0:
   version "3.16.2"
   resolved "https://registry.yarnpkg.com/autolinker/-/autolinker-3.16.2.tgz#6bb4f32432fc111b65659336863e653973bfbcc9"
@@ -13932,6 +13964,13 @@ file-entry-cache@^6.0.1:
   dependencies:
     flat-cache "^3.0.4"
 
+file-selector@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/file-selector/-/file-selector-0.6.0.tgz#fa0a8d9007b829504db4d07dd4de0310b65287dc"
+  integrity sha512-QlZ5yJC0VxHxQQsQhXvBaC7VRJ2uaxTf+Tfpu4Z/OcVQJVpZO+DGU0rkoVW5ce2SccxugvpBJoMvUs59iILYdw==
+  dependencies:
+    tslib "^2.4.0"
+
 file-type@^16.5.4:
   version "16.5.4"
   resolved "https://registry.yarnpkg.com/file-type/-/file-type-16.5.4.tgz#474fb4f704bee427681f98dd390058a172a6c2fd"
@@ -14046,6 +14085,13 @@ fn.name@1.x.x:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/fn.name/-/fn.name-1.1.0.tgz#26cad8017967aea8731bc42961d04a3d5988accc"
   integrity sha512-GRnmB5gPyJpAhTQdSZTSp9uaPSvl09KoYcMQtsB9rQoOmzs9dH6ffeccH+Z+cv6P68Hu5bC6JjRh4Ah/mHSNRw==
+
+focus-trap@7.5.2:
+  version "7.5.2"
+  resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-7.5.2.tgz#e5ee678d10a18651f2591ffb66c949fb098d57cf"
+  integrity sha512-p6vGNNWLDGwJCiEjkSK6oERj/hEyI9ITsSwIUICBoKLlWiTWXJRfQibCwcoi50rTZdbi87qDtUlMCmQwsGSgPw==
+  dependencies:
+    tabbable "^6.2.0"
 
 follow-redirects@^1.0.0, follow-redirects@^1.15.6:
   version "1.15.6"
@@ -20829,6 +20875,15 @@ react-double-scrollbar@0.0.15:
   resolved "https://registry.yarnpkg.com/react-double-scrollbar/-/react-double-scrollbar-0.0.15.tgz#e915ab8cb3b959877075f49436debfdb04288fe4"
   integrity sha512-dLz3/WBIpgFnzFY0Kb4aIYBMT2BWomHuW2DH6/9jXfS6/zxRRBUFQ04My4HIB7Ma7QoRBpcy8NtkPeFgcGBpgg==
 
+react-dropzone@^14.2.3:
+  version "14.2.3"
+  resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-14.2.3.tgz#0acab68308fda2d54d1273a1e626264e13d4e84b"
+  integrity sha512-O3om8I+PkFKbxCukfIR3QAGftYXDZfOE2N1mr/7qebQJHs7U+/RSL/9xomJNpRg9kM5h9soQSdf0Gc7OHF5Fug==
+  dependencies:
+    attr-accept "^2.2.2"
+    file-selector "^0.6.0"
+    prop-types "^15.8.1"
+
 react-error-overlay@^6.0.11:
   version "6.0.11"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.11.tgz#92835de5841c5cf08ba00ddd2d677b6d17ff9adb"
@@ -22925,6 +22980,11 @@ symbol-tree@^3.2.4:
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/symbol-tree/-/symbol-tree-3.2.4.tgz#430637d248ba77e078883951fb9aa0eed7c63fa2"
   integrity sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==
+
+tabbable@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-6.2.0.tgz#732fb62bc0175cfcec257330be187dcfba1f3b97"
+  integrity sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==
 
 tapable@^1.0.0:
   version "1.1.3"
