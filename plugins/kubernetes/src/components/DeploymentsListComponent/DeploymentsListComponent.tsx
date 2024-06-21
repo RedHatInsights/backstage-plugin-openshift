@@ -24,7 +24,7 @@ import TimesCircle from "@patternfly/react-icons/dist/js/icons/times-circle-icon
 
 export const DeploymentsListComponent = (data: any) => {
     console.log(data)
-    const { result: KubernetesResult, deploymentUrlPath: deploymentUrl, loaded: KubernetesLoaded, error: KubernetesError } = QueryKubernetes(data);
+    const { result: KubernetesResult, loaded: KubernetesLoaded, error: KubernetesError } = QueryKubernetes(data);
 
     console.log(KubernetesResult.deployments)
     console.log(KubernetesLoaded)
@@ -207,15 +207,17 @@ export const DeploymentsListComponent = (data: any) => {
     }
 
     const RowBody = ({ result }) => {
-        const url = `${deploymentUrl}${result.name}`
+        // const url = `${deploymentUrl}/${result.name}`
+        // console.log(url)
+
         return (
             <TableRow>
                 <TableCell align="center">{checkDeploymentStatus(result.status)}</TableCell>
                 <TableCell align="center">
-                    <Link href={url} underline="hover">{result.name}</Link>
+                    <Link href={`${result.name}`} underline="hover">{result.name}</Link>
                 </TableCell>
                 <TableCell align="center">
-                    <Link href={result.image} underline="hover">{result.image}</Link>
+                    <Link href={`https://${result.image}`} underline="hover">{result.image}</Link>
                 </TableCell>
                 <TableCell align="center">
                     <ResourceUsageProgress resourceUsage={result.resourceUsage} resourceLimitsRequests={result.resourceLimitsRequests} resourceType="cpu" />

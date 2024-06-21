@@ -11,8 +11,6 @@ const QueryKubernetes = (data: any) => {
 
     const environmentName = data.environmentName;
 
-
-
     const getEnvironmentNamespace = (environment: string) => {
         console.log(data)
         console.log(environment)
@@ -55,6 +53,8 @@ const QueryKubernetes = (data: any) => {
         return cluster;
     };
 
+    const deploymentUrl = getClusterUrl(environmentName)
+
     // Get Backstage objects
     const config = useApi(configApiRef);
 
@@ -90,7 +90,7 @@ const QueryKubernetes = (data: any) => {
 
     console.log(result)
 
-    return { result, loaded, error }
+    return { result,deploymentUrl, loaded, error }
 }
 
 export default QueryKubernetes;
