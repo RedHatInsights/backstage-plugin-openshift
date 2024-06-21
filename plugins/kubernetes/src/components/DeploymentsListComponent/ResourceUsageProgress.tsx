@@ -22,6 +22,7 @@ const ResourceUsageProgress = (resourceInfo: any) => {
     console.log(limits)
 
 
+    // Validate that usage is below the resource limits
     let variant = ProgressVariant.success;
     if (usage > requests) {
       variant = usage > limits * 0.8 ? ProgressVariant.danger : ProgressVariant.warning;

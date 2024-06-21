@@ -19,6 +19,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import QueryKubernetes from '../../common/QueryKubernetesAPI'
 import ResourceUsageProgress from './ResourceUsageProgress';
+import CheckCircle from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
+import TimesCircle from "@patternfly/react-icons/dist/js/icons/times-circle-icon";
 
 export const DeploymentsListComponent = (data: any) => {
     console.log(data)
@@ -126,8 +128,6 @@ export const DeploymentsListComponent = (data: any) => {
     }
 
     const allDeploymentData = [];
-    const [deployments, setDeployments] = useState<Array<Object>>([]);
-    const [loaded, setLoaded] = useState(false);
     
     // creates an object with each pod name and associated cpu and memory usage
     const getDeploymentData = (data: any) => {
@@ -147,6 +147,7 @@ export const DeploymentsListComponent = (data: any) => {
 
             allDeploymentData.push({
                 "name": deploymentData[deployment].metadata.name,
+                "status": deploymentData[deployment].status.readyReplicas,
                 "resourceUsage": totalPodUsage,
                 "resourceLimitsRequests": resourceInfo,
                 "creationTimestamp": deploymentData[deployment].metadata.creationTimestamp,
@@ -156,18 +157,20 @@ export const DeploymentsListComponent = (data: any) => {
 
         console.log(allDeploymentData)
 
-        console.log(deployments)
-
         return allDeploymentData
     }
 
-    
-    
-    // useEffect(() => {
-        getDeploymentData(KubernetesResult)
-    // }, [])
+    getDeploymentData(KubernetesResult)
 
-    
+    // Validate that availableReplicas is greater than 0
+    const checkDeploymentStatus = (deploymentStatus: any) => {
+        if (deploymentStatus > 0) {
+            return <CheckCircle color="#00FF00" />
+        }
+
+        return <TimesCircle color="#FF0000" />;
+    }
+
     const useStyles = makeStyles((theme) => ({
         root: {
           width: '100%',
@@ -207,7 +210,7 @@ export const DeploymentsListComponent = (data: any) => {
         const url = `${deploymentUrl}${result.name}`
         return (
             <TableRow>
-                <TableCell align="center">PLACEHOLDER</TableCell>
+                <TableCell align="center">{checkDeploymentStatus(result.status)}</TableCell>
                 <TableCell align="center">
                     <Link href={url} underline="hover">{result.name}</Link>
                 </TableCell>
