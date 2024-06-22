@@ -6,54 +6,27 @@ const QueryKubernetes = (data: any) => {
     type KubernetesApp = Record<string, any>;
 
     const [result, setResult] = useState<KubernetesApp>({});
+    const [deploymentUrl, setDeploymentUrl] = useState("")
     const [loaded, setLoaded] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
 
-    const environmentName = data.environmentName;
+    console.log(data)
+    // const environmentName = data.environmentName;
 
-    const getEnvironmentNamespace = (environment: string) => {
-        console.log(data)
-        console.log(environment)
-        const clusterInfo = data.qontractResult.find(e => e.cluster.name === environment)
-        const namespaceName = clusterInfo?.name
+    // const getEnvironmentNamespace = (environment: string) => {
+    //     console.log(data)
+    //     console.log(environment)
 
-        return namespaceName
-    }
+    //     const clusterInfo = data.qontractResult.find(e => e.path.includes(`${environment}.yml`))
+    //     const namespaceName = clusterInfo?.name
 
-    const namespaceName = getEnvironmentNamespace(environmentName)
 
-    console.log(namespaceName)
+    //     return namespaceName
+    // }
 
-    const clusterMap = {
-        'crc-eph': {
-            url: `https://console-openshift-console.apps.crc-eph.r9lp.p1.openshiftapps.com/k8s/ns/${namespaceName}/deployments`,
-            name: 'ephemeral',
-        },
-        crcs02ue1: {
-            url: `https://console-openshift-console.apps.crcs02ue1.urby.p1.openshiftapps.com/k8s/ns/${namespaceName}/deployments`,
-            name: 'stage',
-        },
-        crcp01ue1: {
-            url: `https://console-openshift-console.apps.crcp01ue1.o9m8.p1.openshiftapps.com/k8s/ns/${namespaceName}/deployments`,
-            name: 'prod',
-        },
-    };
+    // const namespaceName = getEnvironmentNamespace(environmentName)
 
-    const getClusterName = (cluster: string) => {
-        if (clusterMap[cluster as keyof typeof clusterMap]) {
-            return clusterMap[cluster as keyof typeof clusterMap].name;
-        }
-        return cluster;
-    };
-
-    const getClusterUrl = (cluster: string) => {
-        if (clusterMap[cluster as keyof typeof clusterMap]) {
-            return clusterMap[cluster as keyof typeof clusterMap].url;
-        }
-        return cluster;
-    };
-
-    const deploymentUrl = getClusterUrl(environmentName)
+    // console.log(namespaceName)
 
     // Get Backstage objects
     const config = useApi(configApiRef);
@@ -61,14 +34,20 @@ const QueryKubernetes = (data: any) => {
     const backendUrl = config.getString('backend.baseUrl');
 
     const getClusterData = async() => {
-        const proxyName = getClusterName(environmentName)
+        // setDeploymentUrl(getClusterUrl(environmentName))
+        // const proxyName = getClusterName(environmentName)
+
+        // console.log(environmentName)
+        // console.log(getClusterUrl(environmentName))
+        // console.log(proxyName)
+
         const clusterData = {deployments: [], pods: []}
         await Promise.all([
-            fetch(`${backendUrl}/api/proxy/${proxyName}/apis/apps/v1/namespaces/${namespaceName}/deployments`)
+            fetch(`${backendUrl}/api/proxy/${data.environmentName}/apis/apps/v1/namespaces/${data.namespace}/deployments`)
             .then(response => response.json())
             .then(response => {clusterData.deployments = response.items}),
 
-            fetch(`${backendUrl}/api/proxy/${proxyName}/apis/metrics.k8s.io/v1beta1/namespaces/${namespaceName}/pods`)
+            fetch(`${backendUrl}/api/proxy/${data.environmentName}/apis/metrics.k8s.io/v1beta1/namespaces/${data.namespace}/pods`)
             .then(response => response.json())
             .then(response => {clusterData.pods = response.items}),
         ])
@@ -86,11 +65,13 @@ const QueryKubernetes = (data: any) => {
 
     useEffect(() => {
         getClusterData()
-    }, [namespaceName]);
+
+    }, [data.namespaceName]);
 
     console.log(result)
+    console.log(deploymentUrl)
 
-    return { result,deploymentUrl, loaded, error }
+    return { result, deploymentUrl, loaded, error }
 }
 
 export default QueryKubernetes;

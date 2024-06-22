@@ -3,8 +3,6 @@ import {
   Progress,
   ProgressVariant,
   ProgressMeasureLocation,
-  Split,
-  SplitItem
 } from '@patternfly/react-core';
 
 const ResourceUsageProgress = (resourceInfo: any) => {
@@ -31,17 +29,18 @@ const ResourceUsageProgress = (resourceInfo: any) => {
     const percentage = ((usage * 100) / limits);
     console.log(percentage)
 
-
+    if (percentage !== 0) {
     return (
-        <React.Fragment>
+        <div>
             <Progress
-                value={percentage}
+                value={30}
                 measureLocation={ProgressMeasureLocation.none}
                 variant={variant}
-                // label={`${percentage.toFixed(2)}%`}
+                label={`${percentage.toFixed(2)}%`}
             /> 
-        </ React.Fragment>
+        </ div>
     )
+  }
 }
 
 export default ResourceUsageProgress;

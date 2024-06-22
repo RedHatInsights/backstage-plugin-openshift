@@ -51,12 +51,12 @@ proxy:
       target: ''
       allowedMethods: ['POST', 'GET']
       headers:
-        Authorization: "Bearer "
+        Authorization: "Bearer ${STAGE_TOKEN}"
     '/prod':
-      target: 'https://api.crc-eph.r9lp.p1.openshiftapps.com:6443'
+      target: ''
       allowedMethods: ['POST', 'GET']
       headers:
-        Authorization: "Bearer ${EPHEMERAL_TOKEN}"
+        Authorization: "Bearer ${PROD_TOKEN}"
 
   ### Example for how to add a proxy endpoint for the frontend.
   ### A typical reason to do this is to handle HTTPS and CORS for internal services.

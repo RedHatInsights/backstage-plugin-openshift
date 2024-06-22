@@ -13,6 +13,13 @@ import {
     TableRow,
     Typography } from '@material-ui/core';
 import {
+    GridItem,
+    Page,
+    PageSection,
+    Stack,
+    StackItem,
+} from "@patternfly/react-core";
+import {
     InfoCard,
 } from '@backstage/core-components';
 import { makeStyles } from '@material-ui/core/styles';
@@ -24,13 +31,25 @@ import TimesCircle from "@patternfly/react-icons/dist/js/icons/times-circle-icon
 
 export const DeploymentsListComponent = (data: any) => {
     console.log(data)
-    const { result: KubernetesResult, loaded: KubernetesLoaded, error: KubernetesError } = QueryKubernetes(data);
+    const { result: KubernetesResult, deploymentUrl: DeploymentUrl, loaded: KubernetesLoaded, error: KubernetesError } = QueryKubernetes(data);
 
+    console.log(DeploymentUrl)
     console.log(KubernetesResult.deployments)
     console.log(KubernetesLoaded)
     // table pagination
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+    const useStyles = makeStyles((theme) => ({
+        root: {
+          width: '100%',
+          '& > * + *': {
+            marginTop: theme.spacing(2),
+          },
+        },
+    }));
+
+    const classes = useStyles();
 
     const parseResourceValue = (value: string, resourceType: string) => {
         const m = new RegExp("m");
@@ -171,16 +190,15 @@ export const DeploymentsListComponent = (data: any) => {
         return <TimesCircle color="#FF0000" />;
     }
 
-    const useStyles = makeStyles((theme) => ({
-        root: {
-          width: '100%',
-          '& > * + *': {
-            marginTop: theme.spacing(2),
-          },
-        },
-    }));
-
-    const classes = useStyles();
+    const formatDeploymentTime = (deployDateTime: any) => {
+        const formattedTime = deployDateTime.split('T')[1].replace(/Z/g, ' ');
+        const formattedDate = deployDateTime.split('T')[0].replace(/-/g, ' ');
+        const day = formattedDate.split(' ')[2]
+        const month = formattedDate.split(' ')[1]
+        const year = formattedDate.split(' ')[0]
+        
+        return `${month}/${day}/${year}, ${formattedTime}`
+    }
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -198,12 +216,17 @@ export const DeploymentsListComponent = (data: any) => {
                     <TableCell align="center"><Typography variant="button">Status</Typography></TableCell>
                     <TableCell align="center"><Typography variant="button">Name</Typography></TableCell>
                     <TableCell align="center"><Typography variant="button">Image Tag</Typography></TableCell>
-                    <TableCell align="center"><Typography variant="button">CPU Usage</Typography></TableCell>
-                    <TableCell align="center"><Typography variant="button">Memory Usage</Typography></TableCell>
+                    <TableCell align="center"><Typography variant="button">CPU</Typography></TableCell>
+                    <TableCell align="center"><Typography variant="button">Memory</Typography></TableCell>
                     <TableCell align="center"><Typography variant="button">Last Deployment Time</Typography></TableCell>
                 </TableRow>
             </TableHead>
         )
+    }
+
+    const formatImageLinkText = (imageUrl: string) => {
+        console.log(imageUrl.split("/").pop())
+        return imageUrl.split("/").pop()
     }
 
     const RowBody = ({ result }) => {
@@ -212,20 +235,32 @@ export const DeploymentsListComponent = (data: any) => {
 
         return (
             <TableRow>
-                <TableCell align="center">{checkDeploymentStatus(result.status)}</TableCell>
                 <TableCell align="center">
-                    <Link href={`${result.name}`} underline="hover">{result.name}</Link>
+                    <Typography align="center" variant="button">{checkDeploymentStatus(result.status)}</Typography>
                 </TableCell>
                 <TableCell align="center">
-                    <Link href={`https://${result.image}`} underline="hover">{result.image}</Link>
+                    <Typography align="center" variant="button">
+                        <Link href={`${data.environmentUrl}/${data.namespace}/deployments/${result.name}`} underline="hover">{result.name}</Link>
+                    </Typography>
                 </TableCell>
                 <TableCell align="center">
-                    <ResourceUsageProgress resourceUsage={result.resourceUsage} resourceLimitsRequests={result.resourceLimitsRequests} resourceType="cpu" />
+                    <Typography align="center" variant="button">
+                        <Link href={`https://${result.image}`} underline="hover">{formatImageLinkText(result.image)}</Link>
+                    </Typography>
                 </TableCell>
                 <TableCell align="center">
-                    <ResourceUsageProgress resourceUsage={result.resourceUsage} resourceLimitsRequests={result.resourceLimitsRequests} resourceType="memory" />
+                    <Typography align="center" variant="button">
+                        <ResourceUsageProgress resourceUsage={result.resourceUsage} resourceLimitsRequests={result.resourceLimitsRequests} resourceType="cpu" />
+                    </Typography>
                 </TableCell>
-                <TableCell align="center">{result.creationTimestamp}</TableCell>
+                <TableCell align="center">
+                    <Typography align="center" variant="button">
+                        <ResourceUsageProgress resourceUsage={result.resourceUsage} resourceLimitsRequests={result.resourceLimitsRequests} resourceType="memory" />
+                    </Typography>
+                </TableCell>
+                <TableCell align="center">
+                    <Typography align="center" variant="button">{formatDeploymentTime(result.creationTimestamp)}</Typography>
+                </TableCell>
             </TableRow>
         )
     }
@@ -246,7 +281,7 @@ export const DeploymentsListComponent = (data: any) => {
     if (KubernetesError) {
         return (
             <InfoCard>
-                <Typography align="center" variant="body1">
+                <Typography align="center" variant="button">
                     Error retrieving data from Kubernetes cluster.
                 </Typography>
             </InfoCard>
@@ -262,25 +297,50 @@ export const DeploymentsListComponent = (data: any) => {
         )
     }
     
-    // if (loaded) {
-        return (
-            <Grid container spacing={3} direction="column">
-                <Grid item>
-                    <TableContainer>
-                        <ShowTable />
-                    </TableContainer>
-                    <TablePagination
-                        rowsPerPageOptions={[5, 10, 20]}
-                        component="div"
-                        count={allDeploymentData.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
-                </Grid>
+    // return (
+    //     <Grid container spacing={3} direction="column">
+            // <Grid item>
+            //     <TableContainer>
+            //         <ShowTable />
+            //     </TableContainer>
+            //     <TablePagination
+            //         rowsPerPageOptions={[5, 10, 20]}
+            //         component="div"
+            //         count={allDeploymentData.length}
+            //         rowsPerPage={rowsPerPage}
+            //         page={page}
+            //         onPageChange={handleChangePage}
+            //         onRowsPerPageChange={handleChangeRowsPerPage}
+            //     />
+            // </Grid>
+    //     </Grid>
+    // )
+
+    return (
+        <Page>
+        <PageSection isCenterAligned={true}>
+          <Stack hasGutter>
+            <StackItem>
+            <Grid>
+                <GridItem span={6}>
+                <TableContainer>
+                    <ShowTable />
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 20]}
+                    component="div"
+                    count={allDeploymentData.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+                </GridItem>
             </Grid>
-        )
-    // }
+            </StackItem>
+          </Stack>
+          </PageSection>
+          </Page>
+    )
 
 }
