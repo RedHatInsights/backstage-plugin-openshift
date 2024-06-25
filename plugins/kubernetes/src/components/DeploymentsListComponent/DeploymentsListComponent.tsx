@@ -277,7 +277,6 @@ export const DeploymentsListComponent = (data: any) => {
         return (
             <InfoCard className={classes.root}>
                 <LinearProgress />
-                <LinearProgress color="secondary" />
             </InfoCard>
         )
     }

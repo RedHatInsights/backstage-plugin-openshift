@@ -143,7 +143,6 @@ export const KubernetesComponent = () => {
         return (
             <InfoCard className={classes.root} title={title}>
                 <LinearProgress />
-                <LinearProgress color="secondary" />
             </InfoCard>
         )
     }
