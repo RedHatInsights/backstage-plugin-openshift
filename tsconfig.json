@@ -12,7 +12,7 @@
     "rootDir": ".",
     "baseUrl": ".",
     "paths": {
-      "@redhatinsights/backstage-plugin-ibutsu": ["./plugins/ibutsu"]
+      "@redhatinsights/backstage-plugin-kubernetes": ["./plugins/kubernetes"]
     },
     "moduleResolution": "Bundler",
   },
