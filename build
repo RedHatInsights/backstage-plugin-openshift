@@ -6,4 +6,4 @@ rm *.tgz
 npm pack
 cd ../..
 mv plugins/kubernetes/*.tgz .
-shasum -a 256 *.tgz | awk '{print $1}' | xxd -r -p | base64
+sha256sum *.tgz | awk '{print $1}' | xxd -r -p | base64

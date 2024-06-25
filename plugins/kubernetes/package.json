@@ -1,5 +1,5 @@
 {
-  "name": "@internal/backstage-plugin-kubernetes",
+  "name": "@redhatinsights/backstage-plugin-kubernetes",
   "version": "0.1.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -21,7 +21,8 @@
     "test": "backstage-cli package test",
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
-    "postpack": "backstage-cli package postpack"
+    "postpack": "backstage-cli package postpack",
+    "export-dynamic": "janus-cli package export-dynamic-plugin"
   },
   "dependencies": {
     "@backstage/core-components": "^0.14.7",
@@ -51,12 +52,14 @@
     "@backstage/core-app-api": "^1.12.5",
     "@backstage/dev-utils": "^1.0.32",
     "@backstage/test-utils": "^1.5.5",
+    "@janus-idp/cli": "^1.11.1",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",
     "msw": "^1.0.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "dist-scalprum"
   ]
 }
