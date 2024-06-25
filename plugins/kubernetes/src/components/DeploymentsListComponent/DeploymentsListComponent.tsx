@@ -230,12 +230,9 @@ export const DeploymentsListComponent = (data: any) => {
     }
 
     const RowBody = ({ result }) => {
-        // const url = `${deploymentUrl}/${result.name}`
-        // console.log(url)
-
         return (
             <TableRow>
-                <TableCell align="center">
+                <TableCell style={{width:'8%'}} align="center">
                     <Typography align="center" variant="button">{checkDeploymentStatus(result.status)}</Typography>
                 </TableCell>
                 <TableCell align="center">
@@ -248,12 +245,12 @@ export const DeploymentsListComponent = (data: any) => {
                         <Link href={`https://${result.image}`} underline="hover">{formatImageLinkText(result.image)}</Link>
                     </Typography>
                 </TableCell>
-                <TableCell align="center">
+                <TableCell style={{width:'10%'}} align="center">
                     <Typography align="center" variant="button">
                         <ResourceUsageProgress resourceUsage={result.resourceUsage} resourceLimitsRequests={result.resourceLimitsRequests} resourceType="cpu" />
                     </Typography>
                 </TableCell>
-                <TableCell align="center">
+                <TableCell style={{width:'10%'}} align="center">
                     <Typography align="center" variant="button">
                         <ResourceUsageProgress resourceUsage={result.resourceUsage} resourceLimitsRequests={result.resourceLimitsRequests} resourceType="memory" />
                     </Typography>
@@ -297,32 +294,9 @@ export const DeploymentsListComponent = (data: any) => {
         )
     }
     
-    // return (
-    //     <Grid container spacing={3} direction="column">
-            // <Grid item>
-            //     <TableContainer>
-            //         <ShowTable />
-            //     </TableContainer>
-            //     <TablePagination
-            //         rowsPerPageOptions={[5, 10, 20]}
-            //         component="div"
-            //         count={allDeploymentData.length}
-            //         rowsPerPage={rowsPerPage}
-            //         page={page}
-            //         onPageChange={handleChangePage}
-            //         onRowsPerPageChange={handleChangeRowsPerPage}
-            //     />
-            // </Grid>
-    //     </Grid>
-    // )
-
     return (
-        <Page>
-        <PageSection isCenterAligned={true}>
-          <Stack hasGutter>
-            <StackItem>
-            <Grid>
-                <GridItem span={6}>
+        <Grid container spacing={3} direction="column">
+            <Grid item>
                 <TableContainer>
                     <ShowTable />
                 </TableContainer>
@@ -335,12 +309,7 @@ export const DeploymentsListComponent = (data: any) => {
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
-                </GridItem>
             </Grid>
-            </StackItem>
-          </Stack>
-          </PageSection>
-          </Page>
+        </Grid>
     )
-
 }

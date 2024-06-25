@@ -1,17 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Progress,
-  ProgressVariant,
-  ProgressMeasureLocation,
-} from '@patternfly/react-core';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 const ResourceUsageProgress = (resourceInfo: any) => {
 
 
     console.log(resourceInfo)
-    // console.log(resourceRequests)
-    // console.log(resourceLimits)
     const resourceType = resourceInfo.resourceType;
     const usage = resourceInfo.resourceUsage[resourceType];
     console.log(usage)
@@ -26,6 +20,14 @@ const ResourceUsageProgress = (resourceInfo: any) => {
       },
     });
 
+    const classes = useStyles();
+
+    // Validate that usage is below the resource limits
+    let barColor = "#228B22";
+    if (usage > requests) {
+      barColor = usage > limits * 0.8 ? "#B22222" : "#FFD700";
+    }
+
     const BorderLinearProgress = withStyles((theme) => ({
       root: {
         height: 10,
@@ -36,15 +38,9 @@ const ResourceUsageProgress = (resourceInfo: any) => {
       },
       bar: {
         borderRadius: 5,
-        backgroundColor: '#1a90ff',
+        backgroundColor: barColor,
       },
     }))(LinearProgress);
-
-    // Validate that usage is below the resource limits
-    let variant = ProgressVariant.success;
-    if (usage > requests) {
-      variant = usage > limits * 0.8 ? "#8B0000" : "#228B22";
-    }
 
     const percentage = ((usage * 100) / limits);
     console.log(percentage)
@@ -52,7 +48,7 @@ const ResourceUsageProgress = (resourceInfo: any) => {
     if (percentage !== 0) {
     return (
         <div>
-          <BorderLinearProgress variant="determinate" value={50} />
+          <BorderLinearProgress variant="determinate" value={percentage} />
         </ div>
     )
   }
