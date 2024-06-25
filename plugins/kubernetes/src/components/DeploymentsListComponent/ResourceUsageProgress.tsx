@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import { Tooltip } from '@patternfly/react-core';
 
 const ResourceUsageProgress = (resourceInfo: any) => {
 
@@ -8,19 +9,8 @@ const ResourceUsageProgress = (resourceInfo: any) => {
     console.log(resourceInfo)
     const resourceType = resourceInfo.resourceType;
     const usage = resourceInfo.resourceUsage[resourceType];
-    console.log(usage)
     const requests = resourceInfo.resourceLimitsRequests.requests ? resourceInfo?.resourceLimitsRequests?.requests[resourceType] : 0;
-    console.log(requests)
     const limits = resourceInfo.resourceLimitsRequests.limits ? resourceInfo?.resourceLimitsRequests?.limits[resourceType] : 0;
-    console.log(limits)
-
-    const useStyles = makeStyles({
-      root: {
-        flexGrow: 1,
-      },
-    });
-
-    const classes = useStyles();
 
     // Validate that usage is below the resource limits
     let barColor = "#228B22";
@@ -43,15 +33,30 @@ const ResourceUsageProgress = (resourceInfo: any) => {
     }))(LinearProgress);
 
     const percentage = ((usage * 100) / limits);
+    const usagePercentageOfRequests = (usage / requests) * 100;
+    const usagePercentageOfLimits = (usage / limits) * 100;
     console.log(percentage)
 
-    if (percentage !== 0) {
+    const formatResourceValue = (value) => {
+      if (resourceInfo.resourceType === 'memory') {
+        return `${(value / 1024).toFixed(4)} GB`;
+      }
+      return `${value.toFixed(4)} cores`;
+    };
+
+    const tooltipContent = `
+    Usage: ${formatResourceValue(usage)} (${usagePercentageOfLimits.toFixed(2)}% of limits, ${usagePercentageOfRequests.toFixed(2)}% of requests)
+    Requests: ${formatResourceValue(requests)}
+    Limits: ${formatResourceValue(limits)}
+  `;
+
     return (
-        <div>
-          <BorderLinearProgress variant="determinate" value={percentage} />
-        </ div>
+        <React.Fragment>
+          <Tooltip content={tooltipContent}>
+            <BorderLinearProgress variant="determinate" value={percentage} />
+          </Tooltip>
+        </ React.Fragment>
     )
-  }
 }
 
 export default ResourceUsageProgress;

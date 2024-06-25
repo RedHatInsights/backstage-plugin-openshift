@@ -150,12 +150,8 @@ export const KubernetesComponent = () => {
 
     return (
         <InfoCard title={title}>
-            <Box display="flex" justifyContent="space-between">
                 <ClusterButtons />
-            </Box>
-            <Grid container spacing={3} direction="column">
                 <DeploymentsListComponent key={currentEnvironment} environmentName={currentEnvironment} namespace={namespaceName} environmentUrl={currentEnvironmentUrl} qontractResult={qontractResult} />
-            </Grid>
         </InfoCard>
     )
 }
