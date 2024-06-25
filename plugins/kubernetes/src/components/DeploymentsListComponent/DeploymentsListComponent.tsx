@@ -1,6 +1,6 @@
 'use strict'
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
     Grid,
     Link,
@@ -13,13 +13,6 @@ import {
     TableRow,
     Typography } from '@material-ui/core';
 import {
-    GridItem,
-    Page,
-    PageSection,
-    Stack,
-    StackItem,
-} from "@patternfly/react-core";
-import {
     InfoCard,
 } from '@backstage/core-components';
 import { makeStyles } from '@material-ui/core/styles';
@@ -31,11 +24,8 @@ import TimesCircle from "@patternfly/react-icons/dist/js/icons/times-circle-icon
 
 export const DeploymentsListComponent = (data: any) => {
     console.log(data)
-    const { result: KubernetesResult, deploymentUrl: DeploymentUrl, loaded: KubernetesLoaded, error: KubernetesError } = QueryKubernetes(data);
+    const { result: KubernetesResult, loaded: KubernetesLoaded, error: KubernetesError } = QueryKubernetes(data);
 
-    console.log(DeploymentUrl)
-    console.log(KubernetesResult.deployments)
-    console.log(KubernetesLoaded)
     // table pagination
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -157,8 +147,6 @@ export const DeploymentsListComponent = (data: any) => {
         console.log(podData);
 
         for (const deployment in deploymentData) {
-            // console.log(deploymentData[deployment])
-
             const resourceInfo = aggregate_pod_resources(deploymentData)
             const totalPodUsage = sumCPUMemoryUsage(deployment, deploymentData, podData)
 
@@ -200,7 +188,7 @@ export const DeploymentsListComponent = (data: any) => {
         return `${month}/${day}/${year}, ${formattedTime}`
     }
 
-    const handleChangePage = (event: unknown, newPage: number) => {
+    const handleChangePage = (newPage: number) => {
         setPage(newPage);
     };
 

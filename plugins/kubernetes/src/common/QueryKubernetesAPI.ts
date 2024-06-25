@@ -1,32 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useEntity } from '@backstage/plugin-catalog-react';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 
 const QueryKubernetes = (data: any) => {
     type KubernetesApp = Record<string, any>;
 
     const [result, setResult] = useState<KubernetesApp>({});
-    const [deploymentUrl, setDeploymentUrl] = useState("")
     const [loaded, setLoaded] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
 
     console.log(data)
-    // const environmentName = data.environmentName;
-
-    // const getEnvironmentNamespace = (environment: string) => {
-    //     console.log(data)
-    //     console.log(environment)
-
-    //     const clusterInfo = data.qontractResult.find(e => e.path.includes(`${environment}.yml`))
-    //     const namespaceName = clusterInfo?.name
-
-
-    //     return namespaceName
-    // }
-
-    // const namespaceName = getEnvironmentNamespace(environmentName)
-
-    // console.log(namespaceName)
 
     // Get Backstage objects
     const config = useApi(configApiRef);
@@ -34,13 +16,6 @@ const QueryKubernetes = (data: any) => {
     const backendUrl = config.getString('backend.baseUrl');
 
     const getClusterData = async() => {
-        // setDeploymentUrl(getClusterUrl(environmentName))
-        // const proxyName = getClusterName(environmentName)
-
-        // console.log(environmentName)
-        // console.log(getClusterUrl(environmentName))
-        // console.log(proxyName)
-
         const clusterData = {deployments: [], pods: []}
         await Promise.all([
             fetch(`${backendUrl}/api/proxy/${data.environmentName}/apis/apps/v1/namespaces/${data.namespace}/deployments`)
@@ -59,7 +34,7 @@ const QueryKubernetes = (data: any) => {
         })
         .catch((_error) => {
             setError(true)
-            // console.error(`Error fetching kubernetes cluster data from ${kubernetesApiEndpoint}`);
+            console.error(`Error fetching kubernetes cluster data from ${data.environmentName}`);
         })
     }
 
@@ -69,9 +44,8 @@ const QueryKubernetes = (data: any) => {
     }, [data.namespaceName]);
 
     console.log(result)
-    console.log(deploymentUrl)
 
-    return { result, deploymentUrl, loaded, error }
+    return { result, loaded, error }
 }
 
 export default QueryKubernetes;
