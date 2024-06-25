@@ -1,0 +1,9 @@
+#!/bin/bash
+
+yarn workspace @redhatinsights/backstage-plugin-kubernetes export-dynamic
+cd plugins/kubernetes
+rm *.tgz
+npm pack
+cd ../..
+mv plugins/kubernetes/*.tgz .
+shasum -a 256 *.tgz | awk '{print $1}' | xxd -r -p | base64

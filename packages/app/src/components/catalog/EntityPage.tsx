@@ -151,7 +151,7 @@ const serviceEntityPage = (
       {cicdContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/kubernetes" title="Kubernetes">
+    <EntityLayout.Route path="/kubernetes-deployments" title="Deployments">
       <EntityKubernetesContent />
     </EntityLayout.Route>
 
