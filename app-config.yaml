@@ -43,10 +43,20 @@ integrations:
     #   apiBaseUrl: https://ghe.example.net/api/v3
     #   token: ${GHE_TOKEN}
 
-# proxy:
-#   endpoints:
-#     '/kubernetes': 
-#       target: 
+proxy:
+  endpoints:
+    '/kubernetes-deployments': 
+      target: 'https://app-interface.apps.rosa.appsrep09ue1.03r5.p3.openshiftapps.com/'
+    '/stage':
+      target: ''
+      allowedMethods: ['POST', 'GET']
+      headers:
+        Authorization: "Bearer ${STAGE_TOKEN}"
+    '/prod':
+      target: ''
+      allowedMethods: ['POST', 'GET']
+      headers:
+        Authorization: "Bearer ${PROD_TOKEN}"
 
   ### Example for how to add a proxy endpoint for the frontend.
   ### A typical reason to do this is to handle HTTPS and CORS for internal services.

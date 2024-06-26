@@ -7,6 +7,6 @@ createDevApp()
   .addPage({
     element: <EntityKubernetesContent />,
     title: 'Root Page',
-    path: '/kubernetes',
+    path: '/kubernetes-deployments',
   })
   .render();
