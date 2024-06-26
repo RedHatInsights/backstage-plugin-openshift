@@ -1,11 +1,11 @@
 import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
-import { KubernetesPlugin, EntityKubernetesContent } from '../src/plugin';
+import { KubernetesInfoPlugin, EntityKubernetesInfoContent } from '../src/plugin';
 
 createDevApp()
-  .registerPlugin(KubernetesPlugin)
+  .registerPlugin(KubernetesInfoPlugin)
   .addPage({
-    element: <EntityKubernetesContent />,
+    element: <EntityKubernetesInfoContent />,
     title: 'Root Page',
     path: '/kubernetes-deployments',
   })

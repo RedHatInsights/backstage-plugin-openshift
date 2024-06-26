@@ -3,13 +3,13 @@ import {
   createComponentExtension,
 } from '@backstage/core-plugin-api';
 
-export const KubernetesPlugin = createPlugin({
-  id: 'kubernetes',
+export const KubernetesInfoPlugin = createPlugin({
+  id: 'kubernetes-deployments',
 });
 
-export const EntityKubernetesContent = KubernetesPlugin.provide(
+export const EntityKubernetesInfoContent = KubernetesInfoPlugin.provide(
   createComponentExtension({
-    name: 'EntityKubernetesContent',
+    name: 'EntityKubernetesInfoContent',
     component: {
       lazy: () => import('./components/KubernetesComponent').then(m => m.KubernetesComponent),
     },

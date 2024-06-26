@@ -1,7 +1,7 @@
-import { kubernetesPlugin } from './plugin';
+import { KubernetesInfoPlugin } from './plugin';
 
 describe('kubernetes', () => {
   it('should export plugin', () => {
-    expect(kubernetesPlugin).toBeDefined();
+    expect(KubernetesInfoPlugin).toBeDefined();
   });
 });

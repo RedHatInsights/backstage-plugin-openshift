@@ -7,7 +7,7 @@ You can find the plugin code in `plugins/kubernetes`
 ## Components
 
 ### Entity Page Card
-* `EntityKubernetesContent`: Displays Kubernetes Deployment information about each service in the Catalog. The following information is provided per deployment:
+* `EntityKubernetesInfoContent`: Displays Kubernetes Deployment information about each service in the Catalog. The following information is provided per deployment:
   * Deployment status
   * Name of deployment
   * Deployed image tag
@@ -46,7 +46,7 @@ dynamicPlugins:
           mountPoint: entity.page.kubernetes-deployoments
       mountPoints:
         - mountPoint: entity.page.kubernetes-deployoments/cards
-          importName: EntityKubernetesContent
+          importName: EntityKubernetesInfoContent
           config:
             layout:
               gridColumnEnd:
