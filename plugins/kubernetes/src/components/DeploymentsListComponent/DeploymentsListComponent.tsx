@@ -23,7 +23,6 @@ import CheckCircle from "@patternfly/react-icons/dist/js/icons/check-circle-icon
 import TimesCircle from "@patternfly/react-icons/dist/js/icons/times-circle-icon";
 
 export const DeploymentsListComponent = (data: any) => {
-    console.log(data)
     const { result: KubernetesResult, loaded: KubernetesLoaded, error: KubernetesError } = QueryKubernetes(data);
 
     // table pagination
@@ -93,7 +92,6 @@ export const DeploymentsListComponent = (data: any) => {
         const resourceInfo = {'requests': {'cpu': 0, 'memory': 0}, 'limits': {'cpu': 0, 'memory': 0}}
         
         Object.values(deploymentData).map(deployment => {
-            console.log(deployment)
             const resourceLimitsCPU = deployment.spec.template.spec.containers[0].resources.limits ? deployment?.spec?.template?.spec?.containers[0]?.resources?.limits?.cpu : 0;
             const resourceLimitsMemory = deployment.spec.template.spec.containers[0].resources.limits ? deployment.spec.template.spec.containers[0].resources.limits.memory : 0;
             const resourceRequestsCPU = deployment.spec.template.spec.containers[0].resources.requests ? deployment.spec.template.spec.containers[0].resources.requests.cpu : 0;
@@ -116,20 +114,13 @@ export const DeploymentsListComponent = (data: any) => {
         // Calculate pod cpu/memory usage alongside data from deployments
         Object.values(podData).map(pod => {
             if (pod.metadata.name.includes(deploymentData[deployment].metadata.name)) {
-                console.log(pod.metadata.name)
-                console.log(deploymentData[deployment].metadata.name);
-
-                console.log(pod)
                 Object.values(pod.containers).forEach(container => {
                     const cpuUsage = container.usage.cpu;
                     const memoryUsage = container.usage.memory;
-                    console.log(memoryUsage)
-                    console.log(cpuUsage)
 
                     totalPodUsage.cpu += parseResourceValue(cpuUsage, "cpu");
                     totalPodUsage.memory += parseResourceValue(memoryUsage, "memory");
                 })
-                console.log(totalPodUsage);
             }
         })
 
@@ -143,14 +134,9 @@ export const DeploymentsListComponent = (data: any) => {
         const deploymentData = data.deployments;
         const podData = data.pods;
 
-        console.log(deploymentData);
-        console.log(podData);
-
         for (const deployment in deploymentData) {
             const resourceInfo = aggregate_pod_resources(deploymentData)
             const totalPodUsage = sumCPUMemoryUsage(deployment, deploymentData, podData)
-
-            console.log(resourceInfo)
 
             allDeploymentData.push({
                 "name": deploymentData[deployment].metadata.name,
@@ -213,7 +199,6 @@ export const DeploymentsListComponent = (data: any) => {
     }
 
     const formatImageLinkText = (imageUrl: string) => {
-        console.log(imageUrl.split("/").pop())
         return imageUrl.split("/").pop()
     }
 

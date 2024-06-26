@@ -8,8 +8,6 @@ const QueryKubernetes = (data: any) => {
     const [loaded, setLoaded] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
 
-    console.log(data)
-
     // Get Backstage objects
     const config = useApi(configApiRef);
 
@@ -42,8 +40,6 @@ const QueryKubernetes = (data: any) => {
         getClusterData()
 
     }, [data.namespaceName]);
-
-    console.log(result)
 
     return { result, loaded, error }
 }

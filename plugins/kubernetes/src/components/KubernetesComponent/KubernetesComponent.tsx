@@ -25,8 +25,6 @@ import { DeploymentsListComponent } from '../DeploymentsListComponent/Deployment
 export const KubernetesComponent = () => {
     const { result: qontractResult, loaded: qontractLoaded, error: qontractError } = QueryQontract(NSQuery);
 
-    console.log(qontractResult)
-
     const title: string = "Deployment Information"
 
     // state variables for stage/prod buttons
@@ -38,9 +36,6 @@ export const KubernetesComponent = () => {
     // const environmentName = data.environmentName;
 
     const getEnvironmentNamespace = (environment: string) => {
-        console.log(qontractResult)
-        console.log(environment)
-
         const clusterInfo = qontractResult.find(e => e.path.includes(`${environment}.yml`))
         const namespaceName = clusterInfo?.name
 
@@ -78,9 +73,6 @@ export const KubernetesComponent = () => {
 
     const namespaceName = getEnvironmentNamespace(currentEnvironment)
 
-    console.log(getClusterUrl(currentEnvironment))
-    console.log(getClusterName(currentEnvironment))
-
     // styles for linear progress bar
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -99,8 +91,6 @@ export const KubernetesComponent = () => {
 
         setCurrentEnvironment(isProdButtonDisabled ? getClusterName('crcs02ue1') : getClusterName('crcp01ue1'))
         setCurrentEnvironmentUrl(isProdButtonDisabled ? getClusterUrl('crcs02ue1') : getClusterUrl('crcp01ue1'))
-
-        console.log(currentEnvironment)
     }
 
     const ClusterButtons = () => {
@@ -108,14 +98,6 @@ export const KubernetesComponent = () => {
             <ButtonGroup aria-label="Basic button group">
                 <Button size="small" variant="contained" color="primary" onClick={() => buttonHandler(true, false)} disabled={isStageButtonDisabled}>Stage</Button>
                 <Button size="small" variant="contained" color="primary" onClick={() => buttonHandler(false, true)} disabled={isProdButtonDisabled}>Prod</Button>
-            </ButtonGroup>
-        );
-    }
-
-    const RefreshButton = () => {
-        return (
-            <ButtonGroup aria-label="Basic button group">
-                <Button size="small" color="primary" onClick={buttonHandler}>Refresh</Button>
             </ButtonGroup>
         );
     }

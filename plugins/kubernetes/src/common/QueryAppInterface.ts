@@ -41,7 +41,6 @@ const QueryQontract = (query: string, path?: string) => {
         queryQontract()
     }, []);
 
-    console.log(result)
     return { result, loaded, error }
 }
 
