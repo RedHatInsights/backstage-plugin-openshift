@@ -1,6 +1,6 @@
 #!/bin/bash
 
-yarn workspace @redhatinsights/backstage-plugin-kubernetes export-dynamic
+yarn workspace @redhatinsights/backstage-plugin-kubernetes-info export-dynamic
 cd plugins/kubernetes/
 rm *.tgz
 npm pack ./dist-dynamic
