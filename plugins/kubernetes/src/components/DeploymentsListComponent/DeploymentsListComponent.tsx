@@ -13,11 +13,13 @@ import {
 import {
     InfoCard,
 } from '@backstage/core-components';
+import { Tooltip } from '@patternfly/react-core';
 import { makeStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import QueryKubernetes from '../../common/QueryKubernetesAPI'
 import ResourceUsageProgress from './ResourceUsageProgress';
 import CheckCircle from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
+import ExclamationTriangleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon';
 import TimesCircle from "@patternfly/react-icons/dist/js/icons/times-circle-icon";
 
 export const DeploymentsListComponent = (data: any) => {
@@ -26,6 +28,7 @@ export const DeploymentsListComponent = (data: any) => {
     // table pagination
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const allDeploymentData = [];
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -99,7 +102,6 @@ export const DeploymentsListComponent = (data: any) => {
             resourceInfo.limits.memory += parseResourceValue(resourceLimitsMemory, "memory")
             resourceInfo.requests.cpu += parseResourceValue(resourceRequestsCPU, "cpu")
             resourceInfo.requests.memory += parseResourceValue(resourceRequestsMemory, "memory")
-            console.log(resourceInfo)
         })
 
         return resourceInfo;
@@ -124,8 +126,6 @@ export const DeploymentsListComponent = (data: any) => {
 
         return totalPodUsage;
     }
-
-    const allDeploymentData = [];
     
     // creates an object with each pod name and associated cpu and memory usage
     const getDeploymentData = (data: any) => {
@@ -138,7 +138,8 @@ export const DeploymentsListComponent = (data: any) => {
 
             allDeploymentData.push({
                 "name": deploymentData[deployment].metadata.name,
-                "status": deploymentData[deployment].status.readyReplicas,
+                "readyReplicas": deploymentData[deployment].status.readyReplicas,
+                "replicas": deploymentData[deployment].status.replicas,
                 "resourceUsage": totalPodUsage,
                 "resourceLimitsRequests": resourceInfo,
                 "creationTimestamp": deploymentData[deployment].metadata.creationTimestamp,
@@ -146,20 +147,24 @@ export const DeploymentsListComponent = (data: any) => {
             });
         }
 
-        console.log(allDeploymentData)
-
         return allDeploymentData
     }
 
     getDeploymentData(KubernetesResult)
 
     // Validate that availableReplicas is greater than 0
-    const checkDeploymentStatus = (deploymentStatus: any) => {
-        if (deploymentStatus > 0) {
-            return <CheckCircle color="#00FF00" />
+    const checkDeploymentStatus = (readyReplicas: any, replicas: any) => {
+        if (readyReplicas === 0) {
+            // Return red 'x'
+            return <TimesCircle color="#FF0000" />;
         }
 
-        return <TimesCircle color="#FF0000" />;
+        if (readyReplicas !== replicas) {
+            <ExclamationTriangleIcon color="#FFD700" />
+        }
+
+        // Return green checkmark
+        return <CheckCircle color="#00FF00" />
     }
 
     const formatDeploymentTime = (deployDateTime: any) => {
@@ -172,14 +177,19 @@ export const DeploymentsListComponent = (data: any) => {
         return `${month}/${day}/${year}, ${formattedTime}`
     }
 
-    // const handleChangePage = (newPage: number) => {
-    //     setPage(newPage);
-    // };
-
-    // const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     setRowsPerPage(+event.target.value);
-    //     setPage(0);
-    // };
+    const handleChangePage = (
+        event: React.MouseEvent<HTMLButtonElement> | null,
+        newPage: number,
+    ) => {
+        setPage(newPage);
+    };
+    
+    const handleChangeRowsPerPage = (
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(page);
+    };
 
     const RowHead = () => {
         return (
@@ -201,10 +211,14 @@ export const DeploymentsListComponent = (data: any) => {
     }
 
     const RowBody = ({ result }) => {
+        const tooltipContent = `Available pods: ${result.readyReplicas}, Desired pods: ${result.replicas}`;
+    
         return (
             <TableRow>
                 <TableCell style={{width:'8%'}} align="center">
-                    <Typography align="center" variant="button">{checkDeploymentStatus(result.status)}</Typography>
+                    <Tooltip content={tooltipContent}>
+                        <Typography align="center" variant="button">{checkDeploymentStatus(result.readyReplicas, result.replicas)}</Typography>
+                    </Tooltip>
                 </TableCell>
                 <TableCell align="center">
                     <Typography align="center" variant="button">
@@ -266,20 +280,6 @@ export const DeploymentsListComponent = (data: any) => {
             </InfoCard>
         )
     }
-
-    const handleChangePage = (
-        event: React.MouseEvent<HTMLButtonElement> | null,
-        newPage: number,
-      ) => {
-        setPage(newPage);
-      };
-    
-      const handleChangeRowsPerPage = (
-        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-      ) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(page);
-      };
     
     return (
         <Grid container spacing={3} direction="column">

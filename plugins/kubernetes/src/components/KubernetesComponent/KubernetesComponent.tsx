@@ -34,6 +34,7 @@ export const KubernetesComponent = () => {
     }
 
     const clusterMap = {
+        // crc-eph is only used for testing purposes
         'crc-eph': {
             url: `https://console-openshift-console.apps.crc-eph.r9lp.p1.openshiftapps.com/k8s/ns`,
             name: 'ephemeral',

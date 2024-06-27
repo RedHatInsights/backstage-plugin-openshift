@@ -4,9 +4,6 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { Tooltip } from '@patternfly/react-core';
 
 const ResourceUsageProgress = (resourceInfo: any) => {
-
-
-    console.log(resourceInfo)
     const resourceType = resourceInfo.resourceType;
     const usage = resourceInfo.resourceUsage[resourceType];
     const requests = resourceInfo.resourceLimitsRequests.requests ? resourceInfo?.resourceLimitsRequests?.requests[resourceType] : 0;
