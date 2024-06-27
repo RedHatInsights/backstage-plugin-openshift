@@ -268,20 +268,18 @@ export const DeploymentsListComponent = (data: any) => {
     
     return (
         <Grid container spacing={3} direction="column">
-            <Grid item>
-                <TableContainer>
-                    <ShowTable />
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 20]}
-                    component="div"
-                    count={allDeploymentData.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </Grid>
+            <TableContainer>
+                <ShowTable />
+            </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 20]}
+                component="div"
+                count={allDeploymentData.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
         </Grid>
     )
 }
