@@ -1,16 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
-    Box,
     Button,
     ButtonGroup,
-    Grid,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TablePagination,
-    TableRow,
     Typography } from '@material-ui/core';
 import {
     InfoCard,
@@ -131,8 +122,11 @@ export const KubernetesComponent = () => {
 
     return (
         <InfoCard title={title}>
+            <div style={{marginBottom: '20px'}}>
                 <ClusterButtons />
-                <DeploymentsListComponent key={currentEnvironment} environmentName={currentEnvironment} namespace={namespaceName} environmentUrl={currentEnvironmentUrl} qontractResult={qontractResult} />
+            </div>
+            <DeploymentsListComponent key={currentEnvironment} environmentName={currentEnvironment} namespace={namespaceName} environmentUrl={currentEnvironmentUrl} qontractResult={qontractResult} />
+            
         </InfoCard>
     )
 }

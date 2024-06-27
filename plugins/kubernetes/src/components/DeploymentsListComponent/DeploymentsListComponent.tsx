@@ -1,5 +1,3 @@
-'use strict'
-
 import React from 'react';
 import {
     Grid,
@@ -174,14 +172,14 @@ export const DeploymentsListComponent = (data: any) => {
         return `${month}/${day}/${year}, ${formattedTime}`
     }
 
-    const handleChangePage = (newPage: number) => {
-        setPage(newPage);
-    };
+    // const handleChangePage = (newPage: number) => {
+    //     setPage(newPage);
+    // };
 
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
+    // const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     setRowsPerPage(+event.target.value);
+    //     setPage(0);
+    // };
 
     const RowHead = () => {
         return (
@@ -240,9 +238,12 @@ export const DeploymentsListComponent = (data: any) => {
             <Table aria-label="simple table">
                 <RowHead />
                 <TableBody>
-                    {allDeploymentData.map((deployment) => (
+                {(allDeploymentData.length > 0
+                    ? allDeploymentData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    : allDeploymentData
+                ).map((deployment) => (
                         <RowBody result={deployment} />
-                    ))}
+                ))}
                 </TableBody>
             </Table>
         )
@@ -265,21 +266,35 @@ export const DeploymentsListComponent = (data: any) => {
             </InfoCard>
         )
     }
+
+    const handleChangePage = (
+        event: React.MouseEvent<HTMLButtonElement> | null,
+        newPage: number,
+      ) => {
+        setPage(newPage);
+      };
+    
+      const handleChangeRowsPerPage = (
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+      ) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(page);
+      };
     
     return (
         <Grid container spacing={3} direction="column">
-            <TableContainer>
-                <ShowTable />
-            </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 20]}
-                component="div"
-                count={allDeploymentData.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+        <TableContainer>
+            <ShowTable />
+        </TableContainer>
+        <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={allDeploymentData.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+        />
         </Grid>
     )
 }

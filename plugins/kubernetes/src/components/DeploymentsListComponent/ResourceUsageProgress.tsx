@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Tooltip } from '@patternfly/react-core';
 
@@ -32,7 +32,7 @@ const ResourceUsageProgress = (resourceInfo: any) => {
       },
     }))(LinearProgress);
 
-    const percentage = ((usage * 100) / limits);
+    const percentage = (usage / limits) * 100;
     const usagePercentageOfRequests = (usage / requests) * 100;
     const usagePercentageOfLimits = (usage / limits) * 100;
     console.log(percentage)
