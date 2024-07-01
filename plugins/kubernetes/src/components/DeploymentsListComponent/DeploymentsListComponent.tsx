@@ -145,6 +145,8 @@ export const DeploymentsListComponent = (data: any) => {
                 "creationTimestamp": deploymentData[deployment].metadata.creationTimestamp,
                 "image": deploymentData[deployment].spec.template.spec.containers[0].image
             });
+
+            console.log(allDeploymentData)
         }
 
         return allDeploymentData

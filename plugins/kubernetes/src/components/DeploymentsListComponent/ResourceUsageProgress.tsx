@@ -9,6 +9,10 @@ const ResourceUsageProgress = (resourceInfo: any) => {
     const requests = resourceInfo.resourceLimitsRequests.requests ? resourceInfo?.resourceLimitsRequests?.requests[resourceType] : 0;
     const limits = resourceInfo.resourceLimitsRequests.limits ? resourceInfo?.resourceLimitsRequests?.limits[resourceType] : 0;
 
+    console.log(`${resourceType} Usage: ${resourceInfo.resourceUsage[resourceType]}`)
+    console.log(`${resourceType} Limits: ${resourceInfo?.resourceLimitsRequests?.limits[resourceType]}`)
+    console.log(`${resourceType} Requests: ${resourceInfo?.resourceLimitsRequests?.requests[resourceType]}`)
+
     // Validate that usage is below the resource limits
     let barColor = "#228B22";
     if (usage > requests) {
