@@ -29,7 +29,6 @@ const QueryQontract = (query: string, path?: string) => {
             .then((data: any) => {
                 setLoaded(true)
                 setResult(data.apps_v1[0].namespaces)
-                console.log(result)
             })
             .catch((_error) => {
                 setError(true)

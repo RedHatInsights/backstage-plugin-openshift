@@ -17,16 +17,14 @@ const QueryKubernetes = (data: any) => {
         const clusterData = {deployments: [], pods: []}
         await Promise.all([
             fetch(`${backendUrl}/api/proxy/${data.environmentName}/apis/apps/v1/namespaces/${data.namespace}/deployments`)
-            .then(response => response.json())
-            .then(response => {clusterData.deployments = response.items}),
+                .then(response => response.json())
+                .then(response => {clusterData.deployments = response.items}),
 
             fetch(`${backendUrl}/api/proxy/${data.environmentName}/apis/metrics.k8s.io/v1beta1/namespaces/${data.namespace}/pods`)
-            .then(response => response.json())
-            .then(response => {clusterData.pods = response.items}),
+                .then(response => response.json())
+                .then(response => {clusterData.pods = response.items}),
         ])
-        .then(response => {
-            console.log(response)
-
+        .then(_ => {
             setLoaded(true)
             setResult(clusterData)
         })
