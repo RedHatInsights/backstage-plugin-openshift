@@ -1,5 +1,5 @@
 {
-  "name": "@redhatinsights/backstage-plugin-kubernetes-info",
+  "name": "@redhatinsights/backstage-plugin-openshift",
   "version": "0.1.1",
   "main": "src/index.ts",
   "types": "src/index.ts",

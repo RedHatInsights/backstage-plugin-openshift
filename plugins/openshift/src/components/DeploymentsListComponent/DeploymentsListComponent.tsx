@@ -16,14 +16,14 @@ import {
 import { Tooltip } from '@patternfly/react-core';
 import { makeStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import QueryKubernetes from '../../common/QueryKubernetesAPI'
+import QueryOpenshift from '../../common/QueryOpenshiftAPI'
 import ResourceUsageProgress from './ResourceUsageProgress';
 import CheckCircle from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import ExclamationTriangleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon';
 import TimesCircle from "@patternfly/react-icons/dist/js/icons/times-circle-icon";
 
 export const DeploymentsListComponent = (data: any) => {
-    const { result: KubernetesResult, loaded: KubernetesLoaded, error: KubernetesError } = QueryKubernetes(data);
+    const { result: OpenshiftResult, loaded: OpenshiftLoaded, error: OpenshiftError } = QueryOpenshift(data);
 
     // table pagination
     const [page, setPage] = React.useState(0);
@@ -152,7 +152,7 @@ export const DeploymentsListComponent = (data: any) => {
         return allDeploymentData
     }
 
-    getDeploymentData(KubernetesResult)
+    getDeploymentData(OpenshiftResult)
 
     // Validate that availableReplicas is greater than 0
     const checkDeploymentStatus = (readyReplicas: any, replicas: any) => {
@@ -265,17 +265,17 @@ export const DeploymentsListComponent = (data: any) => {
         )
     }
 
-    if (KubernetesError) {
+    if (OpenshiftError) {
         return (
             <InfoCard>
                 <Typography align="center" variant="button">
-                    Error retrieving data from Kubernetes cluster.
+                    Error retrieving data from Openshift cluster.
                 </Typography>
             </InfoCard>
         )
     }
 
-    if (!KubernetesLoaded) {
+    if (!OpenshiftLoaded) {
         return (
             <InfoCard className={classes.root}>
                 <LinearProgress />

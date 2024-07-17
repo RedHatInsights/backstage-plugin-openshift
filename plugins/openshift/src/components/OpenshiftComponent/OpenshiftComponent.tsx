@@ -13,7 +13,7 @@ import { NSQuery } from './query';
 
 import { DeploymentsListComponent } from '../DeploymentsListComponent/DeploymentsListComponent';
 
-export const KubernetesComponent = () => {
+export const OpenshiftComponent = () => {
     const { result: qontractResult, loaded: qontractLoaded, error: qontractError } = QueryQontract(NSQuery);
 
     console.log(qontractResult)

@@ -10,7 +10,7 @@ const QueryQontract = (query: string, path?: string) => {
     const { entity } = useEntity();
 
     const backendUrl = config.getString('backend.baseUrl');
-    const proxyUrl = `${backendUrl}/api/proxy/kubernetes-deployments/graphql`
+    const proxyUrl = `${backendUrl}/api/proxy/openshift-deployments/graphql`
     
     // state variables for saving data queried from graphql
     const [result, setResult] = useState<QontractApp>([]);

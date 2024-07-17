@@ -1,0 +1,1 @@
+export { OpenshiftComponent  } from './OpenshiftComponent';

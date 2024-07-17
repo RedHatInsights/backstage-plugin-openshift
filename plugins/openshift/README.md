@@ -1,12 +1,12 @@
-# kubernetes
+# openshift
 
-Welcome to the kubernetes plugin!
+Welcome to the openshift plugin!
 
 _This plugin was created through the Backstage CLI_
 
 ## Getting started
 
-Your plugin has been added to the example app in this repository, meaning you'll be able to access it by running `yarn start` in the root directory, and then navigating to [/kubernetes-deployments](http://localhost:3000/kubernetes-deployments).
+Your plugin has been added to the example app in this repository, meaning you'll be able to access it by running `yarn start` in the root directory, and then navigating to [/openshift-deployments](http://localhost:3000/openshift-deployments).
 
 You can also serve the plugin in isolation by running `yarn start` in the plugin directory.
 This method of serving the plugin provides quicker iteration speed and a faster startup and hot reloads.
