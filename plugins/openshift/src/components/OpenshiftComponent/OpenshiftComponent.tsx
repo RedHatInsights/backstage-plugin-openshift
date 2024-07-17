@@ -65,7 +65,7 @@ export const OpenshiftComponent = () => {
     }
 
     const title: string = `Deployment Information - ${capitalizeFirstLetter(currentEnvironment)} cluster`;
-    const namespaceName = getEnvironmentNamespace(currentEnvironment);
+    const namespaceName = getEnvironmentNamespace(currentEnvironment)
 
     // styles for linear progress bar
     const useStyles = makeStyles((theme) => ({
