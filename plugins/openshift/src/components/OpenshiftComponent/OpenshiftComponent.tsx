@@ -17,15 +17,12 @@ export const OpenshiftComponent = () => {
     const { result: qontractResult, loaded: qontractLoaded, error: qontractError } = QueryQontract(NSQuery);
 
     console.log(qontractResult)
-    const title: string = "Deployment Information"
 
     // state variables for stage/prod buttons
     const [isStageButtonDisabled, setIsStageButtonDisabled] = useState<boolean>(true);
     const [isProdButtonDisabled, setIsProdButtonDisabled] = useState<boolean>(false);
     const [currentEnvironment, setCurrentEnvironment] = useState<string>("")
     const [currentEnvironmentUrl, setCurrentEnvironmentUrl] = useState<string>("")
-
-    // const environmentName = data.environmentName;
 
     const getEnvironmentNamespace = (environment: string) => {
         const clusterInfo = qontractResult.find(e => e.path.includes(`${environment}.yml`))
@@ -63,8 +60,12 @@ export const OpenshiftComponent = () => {
         }
         return cluster;
     };
+    const capitalizeFirstLetter = (currentEnvironment: string) => {
+        return currentEnvironment.charAt(0).toUpperCase() + currentEnvironment.slice(1);
+    }
 
-    const namespaceName = getEnvironmentNamespace(currentEnvironment)
+    const title: string = `Deployment Information - ${capitalizeFirstLetter(currentEnvironment)} cluster`;
+    const namespaceName = getEnvironmentNamespace(currentEnvironment);
 
     // styles for linear progress bar
     const useStyles = makeStyles((theme) => ({
