@@ -7,7 +7,7 @@ import {
     InfoCard,
 } from '@backstage/core-components';
 import QueryQontract from '../../common/QueryAppInterface'
-import { makeStyles } from '@material-ui/core/styles';
+import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { NSQuery } from './query';
 
@@ -77,6 +77,16 @@ export const OpenshiftComponent = () => {
         },
     }));
 
+    const theme = createTheme({
+        palette: {
+          action: {
+            disabledBackground: '#191970',
+            disabled: 'set color of text here'
+          }
+        }
+      }
+    )
+
     const classes = useStyles();
 
     const buttonHandler = (isStageDisabled: boolean, isProdDisabled: boolean) => {
@@ -89,10 +99,12 @@ export const OpenshiftComponent = () => {
 
     const ClusterButtons = () => {
         return (
-            <ButtonGroup aria-label="Basic button group">
+            // <ButtonGroup aria-label="Basic button group">
+            <ThemeProvider theme={theme}>
                 <Button size="small" variant="contained" color="primary" onClick={() => buttonHandler(true, false)} disabled={isStageButtonDisabled}>Stage</Button>
                 <Button size="small" variant="contained" color="primary" onClick={() => buttonHandler(false, true)} disabled={isProdButtonDisabled}>Prod</Button>
-            </ButtonGroup>
+            </ThemeProvider>
+            // </ButtonGroup>
         );
     }
 
