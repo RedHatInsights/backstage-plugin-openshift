@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 
-const QueryKubernetes = (data: any) => {
-    type KubernetesApp = Record<string, any>;
+const QueryOpenshift = (data: any) => {
+    type OpenshiftApp = Record<string, any>;
 
-    const [result, setResult] = useState<KubernetesApp>({});
+    const [result, setResult] = useState<OpenshiftApp>({});
     const [loaded, setLoaded] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
 
@@ -30,7 +30,7 @@ const QueryKubernetes = (data: any) => {
         })
         .catch((_error) => {
             setError(true)
-            console.error(`Error fetching kubernetes cluster data from ${data.environmentName}`);
+            console.error(`Error fetching openshift cluster data from ${data.environmentName}`);
         })
     }
 
@@ -42,4 +42,4 @@ const QueryKubernetes = (data: any) => {
     return { result, loaded, error }
 }
 
-export default QueryKubernetes;
+export default QueryOpenshift;
