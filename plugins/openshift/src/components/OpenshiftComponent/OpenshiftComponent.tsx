@@ -7,7 +7,7 @@ import {
     InfoCard,
 } from '@backstage/core-components';
 import QueryQontract from '../../common/QueryAppInterface'
-import { makeStyles } from '@material-ui/core/styles';
+import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { NSQuery } from './query';
 
@@ -17,15 +17,12 @@ export const OpenshiftComponent = () => {
     const { result: qontractResult, loaded: qontractLoaded, error: qontractError } = QueryQontract(NSQuery);
 
     console.log(qontractResult)
-    const title: string = "Deployment Information"
 
     // state variables for stage/prod buttons
     const [isStageButtonDisabled, setIsStageButtonDisabled] = useState<boolean>(true);
     const [isProdButtonDisabled, setIsProdButtonDisabled] = useState<boolean>(false);
     const [currentEnvironment, setCurrentEnvironment] = useState<string>("")
     const [currentEnvironmentUrl, setCurrentEnvironmentUrl] = useState<string>("")
-
-    // const environmentName = data.environmentName;
 
     const getEnvironmentNamespace = (environment: string) => {
         const clusterInfo = qontractResult.find(e => e.path.includes(`${environment}.yml`))
@@ -63,7 +60,11 @@ export const OpenshiftComponent = () => {
         }
         return cluster;
     };
+    const capitalizeFirstLetter = (currentEnvironment: string) => {
+        return currentEnvironment.charAt(0).toUpperCase() + currentEnvironment.slice(1);
+    }
 
+    const title: string = `Deployment Information - ${capitalizeFirstLetter(currentEnvironment)} cluster`;
     const namespaceName = getEnvironmentNamespace(currentEnvironment)
 
     // styles for linear progress bar
@@ -75,6 +76,16 @@ export const OpenshiftComponent = () => {
           },
         },
     }));
+
+    const theme = createTheme({
+        palette: {
+          action: {
+            disabledBackground: '#191970',
+            disabled: 'set color of text here'
+          }
+        }
+      }
+    )
 
     const classes = useStyles();
 
@@ -88,10 +99,10 @@ export const OpenshiftComponent = () => {
 
     const ClusterButtons = () => {
         return (
-            <ButtonGroup aria-label="Basic button group">
+            <ThemeProvider theme={theme}>
                 <Button size="small" variant="contained" color="primary" onClick={() => buttonHandler(true, false)} disabled={isStageButtonDisabled}>Stage</Button>
                 <Button size="small" variant="contained" color="primary" onClick={() => buttonHandler(false, true)} disabled={isProdButtonDisabled}>Prod</Button>
-            </ButtonGroup>
+            </ThemeProvider>
         );
     }
 
