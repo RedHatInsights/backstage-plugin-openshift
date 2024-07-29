@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Button,
-  ButtonGroup,
   FormControl,
   Grid,
   InputLabel,
@@ -12,14 +10,28 @@ import {
 import { InfoCard } from '@backstage/core-components';
 import QueryQontract from '../../common/QueryAppInterface';
 import {
-  createTheme,
   makeStyles,
-  ThemeProvider,
 } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { NSQuery } from './query';
 
 import { DeploymentsListComponent } from '../DeploymentsListComponent/DeploymentsListComponent';
+
+const clusterMap = {
+  // crc-eph is only used for testing purposes
+  'crc-eph': {
+    url: `https://console-openshift-console.apps.crc-eph.r9lp.p1.openshiftapps.com/k8s/ns`,
+    name: 'ephemeral',
+  },
+  crcs02ue1: {
+    url: `https://console-openshift-console.apps.crcs02ue1.urby.p1.openshiftapps.com/k8s/ns`,
+    name: 'stage',
+  },
+  crcp01ue1: {
+    url: `https://console-openshift-console.apps.crcp01ue1.o9m8.p1.openshiftapps.com/k8s/ns`,
+    name: 'prod',
+  },
+};
 
 export const OpenshiftComponent = () => {
   const {
@@ -28,40 +40,17 @@ export const OpenshiftComponent = () => {
     error: qontractError,
   } = QueryQontract(NSQuery);
 
-  console.log(qontractResult);
-
-  // state variables for stage/prod buttons
-  const [isStageButtonDisabled, setIsStageButtonDisabled] =
-    useState<boolean>(true);
-  const [isProdButtonDisabled, setIsProdButtonDisabled] =
-    useState<boolean>(false);
   const [currentEnvironment, setCurrentEnvironment] = useState<string>('');
   const [currentEnvironmentUrl, setCurrentEnvironmentUrl] =
     useState<string>('');
 
   const getEnvironmentNamespace = (environment: string) => {
-    const clusterInfo = qontractResult.find(e =>
+    const clusterInfo = qontractResult.find((e: { path: string | string[]; }) =>
       e.path.includes(`${environment}.yml`),
     );
     const namespaceName = clusterInfo?.name;
 
     return namespaceName;
-  };
-
-  const clusterMap = {
-    // crc-eph is only used for testing purposes
-    'crc-eph': {
-      url: `https://console-openshift-console.apps.crc-eph.r9lp.p1.openshiftapps.com/k8s/ns`,
-      name: 'ephemeral',
-    },
-    crcs02ue1: {
-      url: `https://console-openshift-console.apps.crcs02ue1.urby.p1.openshiftapps.com/k8s/ns`,
-      name: 'stage',
-    },
-    crcp01ue1: {
-      url: `https://console-openshift-console.apps.crcp01ue1.o9m8.p1.openshiftapps.com/k8s/ns`,
-      name: 'prod',
-    },
   };
 
   const getClusterName = (cluster: string) => {
@@ -98,32 +87,7 @@ export const OpenshiftComponent = () => {
     },
   }));
 
-  const theme = createTheme({
-    palette: {
-      action: {
-        disabledBackground: '#191970',
-        disabled: 'set color of text here',
-      },
-    },
-  });
-
   const classes = useStyles();
-
-  const buttonHandler = (isStageDisabled: boolean, isProdDisabled: boolean) => {
-    setIsStageButtonDisabled(isStageDisabled);
-    setIsProdButtonDisabled(isProdDisabled);
-
-    setCurrentEnvironment(
-      isProdButtonDisabled
-        ? getClusterName('crcs02ue1')
-        : getClusterName('crcp01ue1'),
-    );
-    setCurrentEnvironmentUrl(
-      isProdButtonDisabled
-        ? getClusterUrl('crcs02ue1')
-        : getClusterUrl('crcp01ue1'),
-    );
-  };
 
   const ClusterSelect = () => {
     return (
@@ -166,7 +130,6 @@ export const OpenshiftComponent = () => {
   useEffect(() => {
     const currentClusterName = getClusterName('crcs02ue1');
     const currentClusterUrl = getClusterUrl('crcs02ue1');
-
     setCurrentEnvironment(currentClusterName);
     setCurrentEnvironmentUrl(currentClusterUrl);
   }, []);
