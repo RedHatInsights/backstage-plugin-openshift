@@ -64,7 +64,7 @@ export const OpenshiftComponent = () => {
         return currentEnvironment.charAt(0).toUpperCase() + currentEnvironment.slice(1);
     }
 
-    const title: string = `Deployment Information - ${capitalizeFirstLetter(currentEnvironment)} cluster`;
+    const title: string = `${capitalizeFirstLetter(currentEnvironment)} Deployments`;
     const namespaceName = getEnvironmentNamespace(currentEnvironment)
 
     // styles for linear progress bar
