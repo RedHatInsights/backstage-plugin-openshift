@@ -33,12 +33,13 @@ const ResourceUsageProgress = (resourceInfo: any) => {
       },
     }))(LinearProgress);
 
-    const percentage = (usage / limits) * 100;
+    // Clamp this value at a max of 100
+    const percentage = Math.min((usage / limits) * 100, 100);
+
     const usagePercentageOfRequests = (usage / requests) * 100;
     const usagePercentageOfLimits = (usage / limits) * 100;
-    console.log(percentage)
 
-    const formatResourceValue = (value) => {
+    const formatResourceValue = (value: number) => {
       if (resourceInfo.resourceType === 'memory') {
         return `${(value / 1024).toFixed(4)} GB`;
       }
