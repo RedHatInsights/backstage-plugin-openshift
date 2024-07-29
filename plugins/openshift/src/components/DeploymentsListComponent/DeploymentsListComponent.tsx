@@ -27,8 +27,8 @@ export const DeploymentsListComponent = (data: any) => {
 
     // table pagination
     const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const allDeploymentData = [];
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const allDeploymentData: { name: any; readyReplicas: any; replicas: any; resourceUsage: { cpu: number; memory: number; }; resourceLimitsRequests: { requests: { cpu: number; memory: number; }; limits: { cpu: number; memory: number; }; }; creationTimestamp: any; image: any; }[] = [];
 
     const useStyles = makeStyles((theme) => ({
         root: {
