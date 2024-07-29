@@ -2,16 +2,18 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Tooltip } from '@patternfly/react-core';
+import { Card, CardContent } from '@material-ui/core';
 
 const ResourceUsageProgress = (resourceInfo: any) => {
     const resourceType = resourceInfo.resourceType;
     const usage = resourceInfo.resourceUsage[resourceType];
     const requests = resourceInfo.resourceLimitsRequests.requests ? resourceInfo?.resourceLimitsRequests?.requests[resourceType] : 0;
     const limits = resourceInfo.resourceLimitsRequests.limits ? resourceInfo?.resourceLimitsRequests?.limits[resourceType] : 0;
+    const [canShowProgress, setCanShowProgress] = React.useState(false);
 
-    console.log(`${resourceType} Usage: ${resourceInfo.resourceUsage[resourceType]}`)
-    console.log(`${resourceType} Limits: ${resourceInfo?.resourceLimitsRequests?.limits[resourceType]}`)
-    console.log(`${resourceType} Requests: ${resourceInfo?.resourceLimitsRequests?.requests[resourceType]}`)
+    React.useEffect(() => {
+      setCanShowProgress(Number.isNaN(usage) || Number.isNaN(requests) || Number.isNaN(limits));
+    }, [usage, limits, requests]);
 
     // Validate that usage is below the resource limits
     let barColor = "#228B22";
@@ -46,15 +48,26 @@ const ResourceUsageProgress = (resourceInfo: any) => {
       return `${value.toFixed(4)} cores`;
     };
 
-    const tooltipContent = `
-    Usage: ${formatResourceValue(usage)} (${usagePercentageOfLimits.toFixed(2)}% of limits, ${usagePercentageOfRequests.toFixed(2)}% of requests)
-    Requests: ${formatResourceValue(requests)}
-    Limits: ${formatResourceValue(limits)}
-  `;
+  const ToolTipContent = () => {
+    return (
+      <Card>
+        <CardContent>
+        <React.Fragment>
+        Usage: {formatResourceValue(usage)} ({usagePercentageOfLimits.toFixed(2)}% of limits, {usagePercentageOfRequests.toFixed(2)}% of requests)
+        <br />
+        Requests: {formatResourceValue(requests)}
+        <br />
+        Limits: {formatResourceValue(limits)}
+      </React.Fragment>
+        </CardContent>
+      </Card>
 
+    )
+  }
+  
     return (
         <React.Fragment>
-          <Tooltip content={tooltipContent}>
+          <Tooltip content={<ToolTipContent/>} >
             <BorderLinearProgress variant="determinate" value={percentage} />
           </Tooltip>
         </ React.Fragment>
