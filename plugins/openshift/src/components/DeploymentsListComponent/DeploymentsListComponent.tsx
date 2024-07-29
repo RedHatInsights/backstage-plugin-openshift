@@ -224,12 +224,12 @@ export const DeploymentsListComponent = (data: any) => {
                 </TableCell>
                 <TableCell align="center">
                     <Typography align="center" variant="button">
-                        <Link href={`${data.environmentUrl}/${data.namespace}/deployments/${result.name}`} underline="hover">{result.name}</Link>
+                        <Link href={`${data.environmentUrl}/${data.namespace}/deployments/${result.name}`} underline="hover" target="_blank">{result.name}</Link>
                     </Typography>
                 </TableCell>
                 <TableCell align="center">
                     <Typography align="center" variant="button">
-                        <Link href={`https://${result.image}`} underline="hover">{formatImageLinkText(result.image)}</Link>
+                        <Link href={`https://${result.image}`} underline="hover"  target="_blank">{formatImageLinkText(result.image)}</Link>
                     </Typography>
                 </TableCell>
                 <TableCell style={{width:'10%'}} align="center">
