@@ -13,18 +13,16 @@ const ResourceUsageProgress = (resourceInfo: any) => {
   const limits = resourceInfo.resourceLimitsRequests.limits
     ? resourceInfo?.resourceLimitsRequests?.limits[resourceType]
     : 0;
-  const [canShowProgress, setCanShowProgress] = React.useState(false);
 
-  React.useEffect(() => {
-    setCanShowProgress(
-      Number.isNaN(usage) || Number.isNaN(requests) || Number.isNaN(limits),
-    );
-  }, [usage, limits, requests]);
-
-  // Validate that usage is below the resource limits
+  // Bar color is green by default
   let barColor = '#228B22';
-  if (usage > requests) {
-    barColor = usage > limits * 0.8 ? '#EE0000' : '#FFD700';
+  // If usage is greater than 60% of the requests, but less than 90 make it yellow
+  if (usage > requests * 0.6 && usage < requests * 0.9) {
+    barColor = '#FFD700';
+  }
+  //if the usage is greater than 90% of the requests, make it red
+  if (usage > requests * 0.9) {
+    barColor = '#EE0000';
   }
 
   const BorderLinearProgress = withStyles(theme => ({
