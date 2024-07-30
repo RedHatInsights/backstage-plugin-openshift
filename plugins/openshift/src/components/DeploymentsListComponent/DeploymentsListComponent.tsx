@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Grid,
   Link,
@@ -28,10 +28,15 @@ export const DeploymentsListComponent = (data: any) => {
     error: OpenshiftError,
   } = QueryOpenshift(data);
 
+
+  useEffect(() => {
+    getDeploymentData(OpenshiftResult);
+  }, [OpenshiftResult]);
+
   // table pagination
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const allDeploymentData: {
+  const [allDeploymentData, setAllDeploymentData] = React.useState<{
     name: any;
     readyReplicas: any;
     replicas: any;
@@ -42,7 +47,8 @@ export const DeploymentsListComponent = (data: any) => {
     };
     creationTimestamp: any;
     image: any;
-  }[] = [];
+  }[]>([]);
+
 
   const useStyles = makeStyles(theme => ({
     root: {
@@ -103,66 +109,51 @@ export const DeploymentsListComponent = (data: any) => {
     return 0;
   };
 
-  const aggregate_pod_resources = (deploymentData: any) => {
+  const sumRequests = (deployment: any) => {
     const resourceInfo = {
       requests: { cpu: 0, memory: 0 },
       limits: { cpu: 0, memory: 0 },
     };
-
-    Object.values(deploymentData).map(deployment => {
-      const resourceLimitsCPU = deployment.spec.template.spec.containers[0]
-        .resources.limits
-        ? deployment?.spec?.template?.spec?.containers[0]?.resources?.limits
-            ?.cpu
-        : 0;
-      const resourceLimitsMemory = deployment.spec.template.spec.containers[0]
-        .resources.limits
-        ? deployment.spec.template.spec.containers[0].resources.limits.memory
-        : 0;
-      const resourceRequestsCPU = deployment.spec.template.spec.containers[0]
-        .resources.requests
-        ? deployment.spec.template.spec.containers[0].resources.requests.cpu
-        : 0;
-      const resourceRequestsMemory = deployment.spec.template.spec.containers[0]
-        .resources.requests
-        ? deployment.spec.template.spec.containers[0].resources.requests.memory
-        : 0;
-
-      resourceInfo.limits.cpu += parseResourceValue(resourceLimitsCPU, 'cpu');
-      resourceInfo.limits.memory += parseResourceValue(
-        resourceLimitsMemory,
-        'memory',
-      );
-      resourceInfo.requests.cpu += parseResourceValue(
-        resourceRequestsCPU,
-        'cpu',
-      );
-      resourceInfo.requests.memory += parseResourceValue(
-        resourceRequestsMemory,
-        'memory',
-      );
-    });
-
+      const replicas = deployment.spec.replicas || 1;
+      deployment.spec.template.spec.containers.forEach((container: any) => {
+        const cpuRequests = container.resources.requests.cpu  || "0m"
+        const memoryRequests = container.resources.requests.memory  || "0Mi"
+        resourceInfo.requests.cpu += parseResourceValue(
+          cpuRequests,
+          'cpu',
+        ) * replicas;
+        resourceInfo.requests.memory += parseResourceValue(
+          memoryRequests,
+          'memory',
+        )* replicas;
+      }) 
     return resourceInfo;
   };
 
   // // calculate the total resource utilization per pod
-  const sumCPUMemoryUsage = (
-    deployment: any,
+  const sumUsage = (
+    deploymentIndex: any,
     deploymentData: any,
     podData: any,
   ) => {
     const totalPodUsage = { cpu: 0, memory: 0 };
-
+    // So we can match the pod name to the deployment name
+    const deploymentName = deploymentData[deploymentIndex].metadata.name;
+    const regex = new RegExp(`^${deploymentName}-[a-z0-9]{8,10}-[a-z0-9]{5}$`, 'i');
     // Calculate pod cpu/memory usage alongside data from deployments
-    Object.values(podData).map(pod => {
+    podData.forEach(pod => {
       if (
-        pod.metadata.name.includes(deploymentData[deployment].metadata.name)
+        regex.test(pod.metadata.name) 
       ) {
-        Object.values(pod.containers).forEach(container => {
+        pod.containers.forEach(container => {
+          //I don't know why we have to do this
+          //But there are some containers with the name POD in the array that 
+          //just have 0 usage. Some bug somewhere else in the logic but I have't tracked it down
+          if (container.name === "POD") {
+            return;
+          }
           const cpuUsage = container.usage.cpu;
           const memoryUsage = container.usage.memory;
-
           totalPodUsage.cpu += parseResourceValue(cpuUsage, 'cpu');
           totalPodUsage.memory += parseResourceValue(memoryUsage, 'memory');
         });
@@ -177,32 +168,37 @@ export const DeploymentsListComponent = (data: any) => {
     const deploymentData = data.deployments;
     const podData = data.pods;
 
-    for (const deployment in deploymentData) {
-      const resourceInfo = aggregate_pod_resources(deploymentData);
-      const totalPodUsage = sumCPUMemoryUsage(
-        deployment,
+    if ( !deploymentData || !podData) {
+      return;
+    }
+
+    setAllDeploymentData([]);
+
+    const cumulativeDeploymentData = []
+
+    deploymentData.forEach((deployment: any, index: number) => {
+      const resourceInfo = sumRequests(deployment);
+      const totalPodUsage = sumUsage(
+        index,
         deploymentData,
         podData,
       );
 
-      allDeploymentData.push({
-        name: deploymentData[deployment].metadata.name,
-        readyReplicas: deploymentData[deployment].status.readyReplicas,
-        replicas: deploymentData[deployment].status.replicas,
+      cumulativeDeploymentData.push({
+        name: deployment.metadata.name,
+        readyReplicas: deployment.status.readyReplicas,
+        replicas: deployment.status.replicas,
         resourceUsage: totalPodUsage,
         resourceLimitsRequests: resourceInfo,
         creationTimestamp:
-          deploymentData[deployment].metadata.creationTimestamp,
+          deployment.metadata.creationTimestamp,
         image:
-          deploymentData[deployment].spec.template.spec.containers[0].image,
+          deployment.spec.template.spec.containers[0].image,
       });
+    });
 
-    }
-
-    return allDeploymentData;
+    setAllDeploymentData(cumulativeDeploymentData);
   };
-
-  getDeploymentData(OpenshiftResult);
 
   // Validate that availableReplicas is greater than 0
   const checkDeploymentStatus = (readyReplicas: any, replicas: any) => {

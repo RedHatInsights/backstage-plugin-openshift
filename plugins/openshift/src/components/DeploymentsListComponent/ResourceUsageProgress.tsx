@@ -41,9 +41,9 @@ const ResourceUsageProgress = (resourceInfo: any) => {
 
   const formatResourceValue = (value: number) => {
     if (resourceInfo.resourceType === 'memory') {
-      return `${(value / 1024).toFixed(4)} GB`;
+      return `${value.toFixed(2)} Mi`;
     }
-    return `${value.toFixed(4)} cores`;
+    return `${value.toFixed(2)} cores`;
   };
 
   const ToolTipContent = () => {
