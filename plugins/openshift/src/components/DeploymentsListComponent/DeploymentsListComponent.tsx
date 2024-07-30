@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import {
+  Card,
+  CardContent,
   Grid,
   Link,
   Table,
@@ -270,9 +272,22 @@ export const DeploymentsListComponent = (data: any) => {
     return imageUrl.split('/').pop();
   };
 
-  const RowBody = ({ result }: { result: any }) => {
-    const tooltipContent = `Available pods: ${result.readyReplicas}, Desired pods: ${result.replicas}`;
+  const ToolTipContent = (result) => {
+    return (
+      <Card>
+        <CardContent>
+          <React.Fragment>
+            Available pods: {result.readyReplicas || 0}
+            <br />
+            Desired pods: {result.replicas}
+          </React.Fragment>
+        </CardContent>
+      </Card>
+    );
+  }
 
+  const RowBody = ({ result }: { result: any }) => {
+    const tooltipContent = ToolTipContent(result);
     return (
       <TableRow>
         <TableCell style={{ width: '8%' }} align="center">
