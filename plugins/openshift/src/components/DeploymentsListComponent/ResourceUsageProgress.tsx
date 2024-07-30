@@ -18,7 +18,7 @@ const ResourceUsageProgress = (resourceInfo: any) => {
     // Validate that usage is below the resource limits
     let barColor = "#228B22";
     if (usage > requests) {
-      barColor = usage > limits * 0.8 ? "#B22222" : "#FFD700";
+      barColor = usage > limits * 0.8 ? "#EE0000" : "#FFD700";
     }
 
     const BorderLinearProgress = withStyles((theme) => ({
