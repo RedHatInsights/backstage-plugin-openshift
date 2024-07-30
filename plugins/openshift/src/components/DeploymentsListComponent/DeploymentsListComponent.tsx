@@ -197,7 +197,6 @@ export const DeploymentsListComponent = (data: any) => {
           deploymentData[deployment].spec.template.spec.containers[0].image,
       });
 
-      console.log(allDeploymentData);
     }
 
     return allDeploymentData;
@@ -347,8 +346,8 @@ export const DeploymentsListComponent = (data: any) => {
                 page * rowsPerPage + rowsPerPage,
               )
             : allDeploymentData
-          ).map(deployment => (
-            <RowBody result={deployment} />
+          ).map((deployment, index) => (
+            <RowBody result={deployment}  key={index}/>
           ))}
         </TableBody>
       </Table>

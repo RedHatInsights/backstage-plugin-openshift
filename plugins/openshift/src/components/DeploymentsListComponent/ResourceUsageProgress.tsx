@@ -10,9 +10,6 @@ const ResourceUsageProgress = (resourceInfo: any) => {
   const requests = resourceInfo.resourceLimitsRequests.requests
     ? resourceInfo?.resourceLimitsRequests?.requests[resourceType]
     : 0;
-  const limits = resourceInfo.resourceLimitsRequests.limits
-    ? resourceInfo?.resourceLimitsRequests?.limits[resourceType]
-    : 0;
 
   // Bar color is green by default
   let barColor = '#228B22';
