@@ -113,13 +113,20 @@ export const DeploymentsListComponent = (data: any) => {
 
   const sumRequests = (deployment: any) => {
     const resourceInfo = {
-      requests: { cpu: 0, memory: 0 },
-      limits: { cpu: 0, memory: 0 },
+      requests: { cpu: 0, memory: 0, undefined: false },
+      limits: { cpu: 0, memory: 0, undefined: false },
     };
       const replicas = deployment.spec.replicas || 1;
       deployment.spec.template.spec.containers.forEach((container: any) => {
-        const cpuRequests = container.resources.requests.cpu  || "0m"
-        const memoryRequests = container.resources.requests.memory  || "0Mi"
+        //if ( Object.keys(container.resources).length === 0) {
+        //  debugger
+        //}
+
+        const undefined = "UNDEFINED"
+        const cpuRequests = container.resources?.requests?.cpu  || undefined
+        const memoryRequests = container.resources?.requests?.memory  || undefined
+        
+        resourceInfo.requests.undefined = memoryRequests === undefined || cpuRequests === undefined;
         resourceInfo.requests.cpu += parseResourceValue(
           cpuRequests,
           'cpu',

@@ -2,11 +2,18 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Tooltip } from '@patternfly/react-core';
-import { Card, CardContent } from '@material-ui/core';
+import { Card, CardContent, Typography } from '@material-ui/core';
 
 const ResourceUsageProgress = (resourceInfo: any) => {
   const resourceType = resourceInfo.resourceType;
   const usage = resourceInfo.resourceUsage[resourceType];
+
+  const isUndefined = resourceInfo.resourceLimitsRequests.requests.undefined
+
+  if (isUndefined) {
+    return <Typography variant="button">Requests undefined</Typography>;
+  }
+
   const requests = resourceInfo.resourceLimitsRequests.requests
     ? resourceInfo?.resourceLimitsRequests?.requests[resourceType]
     : 0;
@@ -45,6 +52,9 @@ const ResourceUsageProgress = (resourceInfo: any) => {
     }
     return `${value.toFixed(2)} cores`;
   };
+
+  
+
 
   const ToolTipContent = () => {
     return (
