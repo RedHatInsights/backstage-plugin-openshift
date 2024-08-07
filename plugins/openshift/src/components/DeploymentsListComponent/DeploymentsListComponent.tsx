@@ -118,10 +118,6 @@ export const DeploymentsListComponent = (data: any) => {
     };
       const replicas = deployment.spec.replicas || 1;
       deployment.spec.template.spec.containers.forEach((container: any) => {
-        //if ( Object.keys(container.resources).length === 0) {
-        //  debugger
-        //}
-
         const undefined = "UNDEFINED"
         const cpuRequests = container.resources?.requests?.cpu  || undefined
         const memoryRequests = container.resources?.requests?.memory  || undefined
