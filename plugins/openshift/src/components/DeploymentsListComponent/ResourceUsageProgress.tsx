@@ -59,7 +59,6 @@ const ResourceUsageProgress = (resourceInfo: any) => {
     if (resourceInfo.resourceType === 'memory') {
       return `${value.toFixed(2)} Mi`;
     }
-    
     return `${value} cores`;
   };
 
