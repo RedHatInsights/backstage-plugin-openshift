@@ -6,7 +6,7 @@ import { Card, CardContent, Typography } from '@material-ui/core';
 
 const ResourceUsageProgress = (resourceInfo: any) => {
   const resourceType = resourceInfo.resourceType;
-  const usage = resourceInfo.resourceUsage[resourceType];
+  let usage = resourceInfo.resourceUsage[resourceType];
 
   const isUndefined = resourceInfo.resourceLimitsRequests.requests.undefined
 
@@ -17,6 +17,17 @@ const ResourceUsageProgress = (resourceInfo: any) => {
   const requests = resourceInfo.resourceLimitsRequests.requests
     ? resourceInfo?.resourceLimitsRequests?.requests[resourceType]
     : 0;
+
+  const convertNanocoresToCores = (value: number) => {
+    return value / 1000000000
+  };
+
+  // cpu utilization is in nanocores
+  if (resourceInfo.resourceType === 'cpu') {
+    usage = convertNanocoresToCores(usage)
+  }
+
+  const usagePercentageOfRequests = Math.min((usage / requests) * 100, 100);
 
   // Bar color is green by default
   let barColor = '#228B22';
@@ -44,17 +55,13 @@ const ResourceUsageProgress = (resourceInfo: any) => {
     },
   }))(LinearProgress);
 
-  const usagePercentageOfRequests = Math.min((usage / requests) * 100, 100);
-
   const formatResourceValue = (value: number) => {
     if (resourceInfo.resourceType === 'memory') {
       return `${value.toFixed(2)} Mi`;
     }
-    return `${value.toFixed(2)} cores`;
+    
+    return `${value} cores`;
   };
-
-  
-
 
   const ToolTipContent = () => {
     return (
