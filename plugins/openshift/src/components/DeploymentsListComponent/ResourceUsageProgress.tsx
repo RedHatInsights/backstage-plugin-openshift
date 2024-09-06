@@ -24,7 +24,7 @@ const ResourceUsageProgress = (resourceInfo: any) => {
 
   // cpu utilization is in nanocores
   if (resourceInfo.resourceType === 'cpu') {
-    usage = convertNanocoresToCores(usage)
+    usage = convertNanocoresToCores(usage).toFixed(6)
   }
 
   const usagePercentageOfRequests = Math.min((usage / requests) * 100, 100);
