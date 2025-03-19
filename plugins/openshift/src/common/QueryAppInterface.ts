@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { request } from 'graphql-request';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useApi, configApiRef, fetchApiRef } from '@backstage/core-plugin-api';
 
