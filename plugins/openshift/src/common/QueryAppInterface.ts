@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { request } from 'graphql-request';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useApi, configApiRef, fetchApiRef } from '@backstage/core-plugin-api';
 
@@ -42,7 +43,7 @@ const QueryQontract = (query: string, path?: string) => {
             .then(data => data.json())
             .then((data: any) => {
                 setLoaded(true)
-                setResult(data.data.apps_v1[0]?.namespaces)
+                setResult(data.data.apps_v1[0].namespaces)
             })
             .catch((_error) => {
                 setError(true)

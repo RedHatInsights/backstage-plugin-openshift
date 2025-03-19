@@ -52,12 +52,12 @@ proxy:
       target: '${EPHEMERAL_URL}'
       allowedMethods: ['POST', 'GET']
       headers:
-        Authorization: "Bearer ${STAGE_TOKEN}"
+        Authorization: "Bearer ${EPHEMERAL_TOKEN}"
     '/prod':
       target: '${EPHEMERAL_URL}'
       allowedMethods: ['POST', 'GET']
       headers:
-        Authorization: "Bearer ${PROD_TOKEN}"
+        Authorization: "Bearer ${EPHEMERAL_TOKEN}"
 
   ### Example for how to add a proxy endpoint for the frontend.
   ### A typical reason to do this is to handle HTTPS and CORS for internal services.
