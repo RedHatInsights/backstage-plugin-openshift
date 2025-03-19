@@ -1,19 +1,21 @@
 import { useState, useEffect } from 'react';
 import { request } from 'graphql-request';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { useApi, configApiRef } from '@backstage/core-plugin-api';
+import { useApi, configApiRef, fetchApiRef } from '@backstage/core-plugin-api';
 
 const QueryQontract = (query: string, path?: string) => {
     type QontractApp = Record<string, any>;
 
     const config = useApi(configApiRef);
+    const fetchApi = useApi(fetchApiRef);
+
     const { entity } = useEntity();
 
     const backendUrl = config.getString('backend.baseUrl');
     const proxyUrl = `${backendUrl}/api/proxy/openshift-deployments/graphql`
-    
+
     // state variables for saving data queried from graphql
-    const [result, setResult] = useState<QontractApp>([]);
+    const [result, setResult] = useState([]);
     const [loaded, setLoaded] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
 
@@ -25,10 +27,23 @@ const QueryQontract = (query: string, path?: string) => {
 
     const queryQontract = async () => {
         const variables = { path: getAppInterfaceNamespacePath() };
-        await request(proxyUrl, query, variables)
+
+        await fetchApi.fetch(proxyUrl, {
+            method: 'POST',
+
+            headers: {
+                "content-type": "application/json"
+            },
+
+            body: JSON.stringify({
+                query: query,
+                variables: variables
+            })
+        })
+            .then(data => data.json())
             .then((data: any) => {
                 setLoaded(true)
-                setResult(data.apps_v1[0].namespaces)
+                setResult(data.data.apps_v1[0]?.namespaces)
             })
             .catch((_error) => {
                 setError(true)

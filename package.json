@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "18 || 20"
+    "node": ">=20.18.1"
   },
   "scripts": {
     "dev": "concurrently \"yarn start\" \"yarn start-backend\"",
@@ -58,5 +58,6 @@
   "dependencies": {
     "graphql": "^16.8.1",
     "graphql-request": "^7.0.1"
-  }
+  },
+  "packageManager": "yarn@4.7.0"
 }
