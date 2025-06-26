@@ -1,0 +1,95 @@
+name: Status Checks
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  plugin-status:
+    name: Plugin Status
+    runs-on: ubuntu-latest
+    
+    outputs:
+      test-status: ${{ steps.test.outcome }}
+      coverage-percentage: ${{ steps.coverage.outputs.percentage }}
+      
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'yarn'
+
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile
+
+    - name: Run tests
+      id: test
+      run: |
+        cd plugins/openshift
+        yarn test --watchAll=false --passWithNoTests --coverage --coverageReporters=json-summary
+      continue-on-error: true
+
+    - name: Extract coverage percentage
+      id: coverage
+      run: |
+        if [ -f plugins/openshift/coverage/coverage-summary.json ]; then
+          COVERAGE=$(cat plugins/openshift/coverage/coverage-summary.json | jq -r '.total.lines.pct')
+          echo "percentage=$COVERAGE" >> $GITHUB_OUTPUT
+          echo "Coverage: $COVERAGE%"
+        else
+          echo "percentage=0" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Create status badge
+      if: github.ref == 'refs/heads/main'
+      run: |
+        mkdir -p badges
+        
+        # Test status badge
+        if [ "${{ steps.test.outcome }}" == "success" ]; then
+          curl -s "https://img.shields.io/badge/tests-passing-brightgreen" > badges/tests.svg
+        else
+          curl -s "https://img.shields.io/badge/tests-failing-red" > badges/tests.svg
+        fi
+        
+        # Coverage badge
+        COVERAGE="${{ steps.coverage.outputs.percentage }}"
+        if (( $(echo "$COVERAGE >= 80" | bc -l) )); then
+          COLOR="brightgreen"
+        elif (( $(echo "$COVERAGE >= 60" | bc -l) )); then
+          COLOR="yellow"
+        else
+          COLOR="red"
+        fi
+        curl -s "https://img.shields.io/badge/coverage-${COVERAGE}%25-${COLOR}" > badges/coverage.svg
+
+    - name: Upload badges
+      if: github.ref == 'refs/heads/main'
+      uses: actions/upload-artifact@v3
+      with:
+        name: status-badges
+        path: badges/
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Run security audit
+      run: |
+        cd plugins/openshift
+        yarn audit --level high
+      continue-on-error: true
+
+    - name: Check for known vulnerabilities
+      uses: actions/dependency-review-action@v3
+      if: github.event_name == 'pull_request' 
