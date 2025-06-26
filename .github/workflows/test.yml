@@ -41,7 +41,7 @@ jobs:
 
     - name: Upload coverage reports to Codecov
       if: matrix.node-version == '20.x'
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         file: ./plugins/openshift/coverage/lcov.info
         flags: openshift-plugin
@@ -50,7 +50,7 @@ jobs:
 
     - name: Archive test results
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: test-results-node-${{ matrix.node-version }}
         path: |
@@ -106,7 +106,7 @@ jobs:
         yarn build
 
     - name: Archive build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
         path: |

@@ -84,7 +84,7 @@ jobs:
 
     - name: Upload coverage artifacts
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: openshift-plugin-coverage
         path: |
