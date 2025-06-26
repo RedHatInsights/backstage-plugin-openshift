@@ -35,7 +35,7 @@ const ResourceUsageProgress = (resourceInfo: any) => {
   if (usage > requests * 0.6 && usage < requests * 0.9) {
     barColor = '#FFD700';
   }
-  //if the usage is greater than 90% of the requests, make it red
+  // if the usage is greater than 90% of the requests, make it red
   if (usage > requests * 0.9) {
     barColor = '#EE0000';
   }

@@ -30,11 +30,6 @@ export const DeploymentsListComponent = (data: any) => {
     error: OpenshiftError,
   } = QueryOpenshift(data);
 
-
-  useEffect(() => {
-    getDeploymentData(OpenshiftResult);
-  }, [OpenshiftResult]);
-
   // table pagination
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -118,11 +113,11 @@ export const DeploymentsListComponent = (data: any) => {
     };
       const replicas = deployment.spec.replicas || 1;
       deployment.spec.template.spec.containers.forEach((container: any) => {
-        const undefined = "UNDEFINED"
-        const cpuRequests = container.resources?.requests?.cpu  || undefined
-        const memoryRequests = container.resources?.requests?.memory  || undefined
+        const undefinedValue = "UNDEFINED"
+        const cpuRequests = container.resources?.requests?.cpu  || undefinedValue
+        const memoryRequests = container.resources?.requests?.memory  || undefinedValue
         
-        resourceInfo.requests.undefined = memoryRequests === undefined || cpuRequests === undefined;
+                  resourceInfo.requests.undefined = memoryRequests === undefinedValue || cpuRequests === undefinedValue;
         resourceInfo.requests.cpu += parseResourceValue(
           cpuRequests,
           'cpu',
@@ -151,9 +146,9 @@ export const DeploymentsListComponent = (data: any) => {
         regex.test(pod.metadata.name) 
       ) {
         pod.containers.forEach(container => {
-          //I don't know why we have to do this
-          //But there are some containers with the name POD in the array that 
-          //just have 0 usage. Some bug somewhere else in the logic but I have't tracked it down
+          // I don't know why we have to do this
+          // But there are some containers with the name POD in the array that 
+          // just have 0 usage. Some bug somewhere else in the logic but I have't tracked it down
           if (container.name === "POD") {
             return;
           }
@@ -169,9 +164,9 @@ export const DeploymentsListComponent = (data: any) => {
   };
 
   // creates an object with each pod name and associated cpu and memory usage
-  const getDeploymentData = (data: any) => {
-    const deploymentData = data.deployments;
-    const podData = data.pods;
+  const getDeploymentData = (openshiftData: any) => {
+    const deploymentData = openshiftData.deployments;
+    const podData = openshiftData.pods;
 
     if ( !deploymentData || !podData) {
       return;
@@ -204,6 +199,10 @@ export const DeploymentsListComponent = (data: any) => {
 
     setAllDeploymentData(cumulativeDeploymentData);
   };
+
+  useEffect(() => {
+    getDeploymentData(OpenshiftResult);
+  }, [OpenshiftResult]);
 
   // Validate that availableReplicas is greater than 0
   const checkDeploymentStatus = (readyReplicas: any, replicas: any) => {

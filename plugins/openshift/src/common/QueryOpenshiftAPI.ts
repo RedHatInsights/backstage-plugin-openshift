@@ -14,31 +14,32 @@ const QueryOpenshift = (data: any) => {
 
     const backendUrl = config.getString('backend.baseUrl');
 
-    const getClusterData = async () => {
-        const clusterData = { deployments: [], pods: [] }
-        await Promise.all([
-            fetchApi.fetch(`${backendUrl}/api/proxy/${data.environmentName}/apis/apps/v1/namespaces/${data.namespace}/deployments`)
-                .then(response => response.json())
-                .then(response => { clusterData.deployments = response.items }),
-
-            fetchApi.fetch(`${backendUrl}/api/proxy/${data.environmentName}/apis/metrics.k8s.io/v1beta1/namespaces/${data.namespace}/pods`)
-                .then(response => response.json())
-                .then(response => { clusterData.pods = response.items }),
-        ])
-            .then(_ => {
-                setLoaded(true)
-                setResult(clusterData)
-            })
-            .catch((_error) => {
-                setError(true)
-                console.error(`Error fetching openshift cluster data from ${data.environmentName}`);
-            })
-    }
-
     useEffect(() => {
+        const getClusterData = async () => {
+            const clusterData = { deployments: [], pods: [] }
+            await Promise.all([
+                fetchApi.fetch(`${backendUrl}/api/proxy/${data.environmentName}/apis/apps/v1/namespaces/${data.namespace}/deployments`)
+                    .then(response => response.json())
+                    .then(response => { clusterData.deployments = response.items }),
+
+                fetchApi.fetch(`${backendUrl}/api/proxy/${data.environmentName}/apis/metrics.k8s.io/v1beta1/namespaces/${data.namespace}/pods`)
+                    .then(response => response.json())
+                    .then(response => { clusterData.pods = response.items }),
+            ])
+                .then(_ => {
+                    setLoaded(true)
+                    setResult(clusterData)
+                })
+                .catch((_error) => {
+                    setError(true)
+                    // eslint-disable-next-line no-console
+                    console.error(`Error fetching openshift cluster data from ${data.environmentName}`);
+                })
+        }
+
         getClusterData()
 
-    }, [data.namespaceName]);
+    }, [data.namespaceName, backendUrl, data.environmentName, data.namespace, fetchApi]);
 
     return { result, loaded, error }
 }

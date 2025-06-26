@@ -66,9 +66,9 @@ export const OpenshiftComponent = () => {
     }
     return cluster;
   };
-  const capitalizeFirstLetter = (currentEnvironment: string) => {
+  const capitalizeFirstLetter = (environmentName: string) => {
     return (
-      currentEnvironment.charAt(0).toUpperCase() + currentEnvironment.slice(1)
+      environmentName.charAt(0).toUpperCase() + environmentName.slice(1)
     );
   };
 
@@ -106,8 +106,8 @@ export const OpenshiftComponent = () => {
             );
           }}
         >
-          <MenuItem value={'stage'}>Stage</MenuItem>
-          <MenuItem value={'prod'}>Prod</MenuItem>
+          <MenuItem value="stage">Stage</MenuItem>
+          <MenuItem value="prod">Prod</MenuItem>
         </Select>
       </FormControl>
     );

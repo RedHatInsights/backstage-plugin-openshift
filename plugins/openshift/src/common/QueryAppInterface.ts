@@ -23,22 +23,21 @@ const QueryQontract = (query: string, path?: string) => {
         return `/services/${platform}/${service}/app.yml`
     }
 
-    const queryQontract = async () => {
-        const variables = { path: getAppInterfaceNamespacePath() };
-        await request(proxyUrl, query, variables)
-            .then((data: any) => {
-                setLoaded(true)
-                setResult(data.apps_v1[0].namespaces)
-            })
-            .catch((_error) => {
-                setError(true)
-            });
-    }
-
     // Get qontract data on load
     useEffect(() => {
+        const queryQontract = async () => {
+            const variables = { path: getAppInterfaceNamespacePath() };
+            await request(proxyUrl, query, variables)
+                .then((data: any) => {
+                    setLoaded(true)
+                    setResult(data.apps_v1[0].namespaces)
+                })
+                .catch((_error) => {
+                    setError(true)
+                });
+        }
         queryQontract()
-    }, []);
+    }, [proxyUrl, query]);
 
     return { result, loaded, error }
 }
