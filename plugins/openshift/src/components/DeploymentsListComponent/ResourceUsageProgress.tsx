@@ -1,4 +1,4 @@
-import React from 'react';
+import { Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Tooltip } from '@patternfly/react-core';
@@ -66,25 +66,25 @@ const ResourceUsageProgress = (resourceInfo: any) => {
     return (
       <Card>
         <CardContent>
-          <React.Fragment>
+          <Fragment>
             Requested: {formatResourceValue(requests)}
             <br />
             Used: {formatResourceValue(usage)}
-          </React.Fragment>
+          </Fragment>
         </CardContent>
       </Card>
     );
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Tooltip content={<ToolTipContent />}>
         <BorderLinearProgress
           variant="determinate"
           value={usagePercentageOfRequests}
         />
       </Tooltip>
-    </React.Fragment>
+    </Fragment>
   );
 };
 

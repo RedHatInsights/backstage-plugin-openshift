@@ -31,12 +31,16 @@
     ]
   },
   "devDependencies": {
-    "@backstage/cli": "^0.30.0",
+    "@backstage/cli": "^0.35.3",
     "@backstage/e2e-test-utils": "^0.1.1",
     "@playwright/test": "^1.32.3",
     "@spotify/prettier-config": "^12.0.0",
     "concurrently": "^8.0.0",
     "lerna": "^7.3.0",
+    "@jest/environment-jsdom-abstract": "^30.0.0",
+    "@types/jest": "^30.0.0",
+    "jest": "^30.2.0",
+    "jsdom": "^27.1.0",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
     "typescript": "~5.3.0"

@@ -12,7 +12,7 @@ This repository contains several GitHub Actions workflows to ensure code quality
 - Changes to OpenShift plugin files
 
 **Features:**
-- Tests on Node.js 18.x and 20.x
+- Tests on Node.js 22.x
 - Runs Jest tests with coverage
 - Uploads coverage to Codecov
 - Linting and TypeScript type checking

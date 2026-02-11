@@ -56,3 +56,6 @@ site
 e2e-test-report/
 
 /catalog
+
+# Cache
+.cache/

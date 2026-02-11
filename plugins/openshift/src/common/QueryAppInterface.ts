@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { request } from 'graphql-request';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 
-const QueryQontract = (query: string, path?: string) => {
+const QueryQontract = (query: string) => {
     type QontractApp = Record<string, any>;
 
     const config = useApi(configApiRef);
@@ -17,11 +17,11 @@ const QueryQontract = (query: string, path?: string) => {
     const [loaded, setLoaded] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
 
-    const getAppInterfaceNamespacePath = () => {
+    const getAppInterfaceNamespacePath = useCallback(() => {
         const platform = entity?.metadata?.labels?.platform
         const service = entity?.metadata?.labels?.service
         return `/services/${platform}/${service}/app.yml`
-    }
+    }, [entity]);
 
     // Get qontract data on load
     useEffect(() => {
@@ -37,7 +37,7 @@ const QueryQontract = (query: string, path?: string) => {
                 });
         }
         queryQontract()
-    }, [proxyUrl, query]);
+    }, [proxyUrl, query, getAppInterfaceNamespacePath]);
 
     return { result, loaded, error }
 }
