@@ -25,10 +25,10 @@
     "export-dynamic": "janus-cli package export-dynamic-plugin"
   },
   "dependencies": {
-    "@backstage/core-components": "^0.16.4",
+    "@backstage/core-components": "^0.18.9",
     "@backstage/core-plugin-api": "^1.10.4",
-    "@backstage/plugin-catalog-react": "^1.15.2",
-    "@backstage/theme": "^0.6.4",
+    "@backstage/plugin-catalog-react": "^2.1.2",
+    "@backstage/theme": "^0.7.3",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@kubernetes/client-node": "0.20.0",
@@ -48,10 +48,10 @@
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.30.0",
+    "@backstage/cli": "^0.36.1",
     "@backstage/core-app-api": "^1.15.5",
-    "@backstage/dev-utils": "^1.1.7",
-    "@backstage/test-utils": "^1.7.5",
+    "@backstage/dev-utils": "^1.1.22",
+    "@backstage/test-utils": "^1.7.17",
     "@janus-idp/cli": "^1.11.1",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
