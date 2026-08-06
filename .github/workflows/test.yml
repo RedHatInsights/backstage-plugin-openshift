@@ -21,10 +21,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Setup Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
@@ -41,7 +41,7 @@ jobs:
 
     - name: Upload coverage reports to Codecov
       if: matrix.node-version == '24.x'
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v6
       with:
         file: ./plugins/openshift/coverage/lcov.info
         flags: openshift-plugin
@@ -50,7 +50,7 @@ jobs:
 
     - name: Archive test results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: test-results-node-${{ matrix.node-version }}
         path: |
@@ -63,10 +63,10 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: '24.x'
         cache: 'yarn'
